@@ -66,14 +66,17 @@
     });
   }
 
-  function insertText(el, text) {
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Rich editors (ProseMirror on ChatGPT/Claude, Quill on Gemini) differ in
+  // which insertion APIs they honor for multi-line text — Quill in particular
+  // can drop everything after the first paragraph on execCommand. A synthetic
+  // paste event goes through each editor's own paste pipeline, which is the
+  // best-supported path for large multi-line payloads. We verify how much
+  // text actually landed and fall back through cruder methods if needed.
+  async function insertText(el, text) {
     el.focus();
-    // The composer may hold a restored draft (e.g. a previous transfer the
-    // user never sent) — clear it first so payloads never concatenate.
-    if (el.isContentEditable) {
-      document.execCommand("selectAll", false, null);
-      document.execCommand("delete", false, null);
-    }
+
     if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
       const setter = Object.getOwnPropertyDescriptor(
         el.tagName === "TEXTAREA"
@@ -85,15 +88,49 @@
       el.dispatchEvent(new Event("input", { bubbles: true }));
       return true;
     }
-    // contenteditable path (ProseMirror / Quill). execCommand is deprecated
-    // but still the only insertion method these editors reliably observe.
-    const ok = document.execCommand("insertText", false, text);
-    if (!ok) {
-      el.textContent = text;
+
+    const clear = () => {
+      document.execCommand("selectAll", false, null);
+      document.execCommand("delete", false, null);
+    };
+    // Rough check that the payload actually landed (innerText normalizes
+    // whitespace differently per editor, so compare on squashed lengths).
+    const landed = () => {
+      const got = el.innerText.replace(/\s+/g, " ").trim().length;
+      const want = text.replace(/\s+/g, " ").trim().length;
+      return got >= want * 0.9;
+    };
+
+    // Attempt 1: synthetic paste through the editor's own pipeline.
+    clear();
+    try {
+      const dt = new DataTransfer();
+      dt.setData("text/plain", text);
       el.dispatchEvent(
-        new InputEvent("input", { bubbles: true, inputType: "insertText", data: text })
+        new ClipboardEvent("paste", {
+          clipboardData: dt,
+          bubbles: true,
+          cancelable: true
+        })
       );
+      await wait(400);
+      if (landed()) return true;
+    } catch (_) {
+      /* DataTransfer/ClipboardEvent unavailable — fall through */
     }
+
+    // Attempt 2: execCommand insertText.
+    el.focus();
+    clear();
+    document.execCommand("insertText", false, text);
+    await wait(400);
+    if (landed()) return true;
+
+    // Attempt 3: brute force. Loses formatting niceties but delivers the text.
+    el.textContent = text;
+    el.dispatchEvent(
+      new InputEvent("input", { bubbles: true, inputType: "insertText", data: text })
+    );
     return true;
   }
 
@@ -101,7 +138,7 @@
     const input = await waitFor(INPUT_SELECTORS[platformId] || [], 30000);
     if (!input) return { ok: false, error: "input-not-found" };
 
-    insertText(input, text);
+    await insertText(input, text);
 
     if (autoSend) {
       // Give the editor a moment to register the input before enabling send.
