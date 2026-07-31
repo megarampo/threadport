@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="../../icons/icon32.png" alt="" width="20" height="20" />
+    <h1>ThreadPort</h1>
+    <span id="quota" class="quota" title="Free transfers left this month"></span>
+  </header>
+
+  <main>
+    <div id="state-unsupported" class="state hidden">
+      <p>Open a conversation on <b>ChatGPT</b>, <b>Claude</b> or <b>Gemini</b>,
+      then click ThreadPort to move it to another AI.</p>
+    </div>
+
+    <div id="state-empty" class="state hidden">
+      <p>No conversation detected on this page yet.</p>
+      <p class="dim">If the chat is clearly visible, the site may have updated
+      its layout — <a id="report-link" href="#">report it</a> and we'll ship a
+      fix fast.</p>
+    </div>
+
+    <div id="state-ready" class="state hidden">
+      <p class="detected">
+        <span id="source-label"></span> conversation ·
+        <b id="msg-count"></b> messages
+      </p>
+      <p class="dim send-to">Continue this conversation on:</p>
+      <div id="targets" class="targets"></div>
+      <label class="autosend">
+        <input type="checkbox" id="autosend" />
+        Send automatically (otherwise it's pasted for you to review)
+      </label>
+    </div>
+
+    <div id="state-limit" class="state hidden">
+      <p><b>Free limit reached for this month.</b></p>
+      <p class="dim">Upgrade to Pro for unlimited transfers.</p>
+      <button id="upgrade" class="upgrade">Upgrade to Pro</button>
+    </div>
+
+    <p id="status" class="status hidden"></p>
+  </main>
+</body>
+<script src="../common/platforms.js"></script>
+<script src="../common/transcript.js"></script>
+<script src="popup.js"></script>
+</html>
