@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Transfer a ChatGPT Conversation to Gemini (2026 Guide)</title>
+<meta name="description" content="Move a ChatGPT conversation to Google Gemini with full context: manual handoff prompt, Gemini's ZIP import (not available in the EU), or a one-click browser extension.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/transfer-chatgpt-to-gemini.html">
+<meta property="og:title" content="How to Transfer a ChatGPT Conversation to Gemini (2026 Guide)">
+<meta property="og:description" content="Gemini's native import doesn't work in the EU — here's every way to continue a ChatGPT conversation on Gemini, compared honestly.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/transfer-chatgpt-to-gemini.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="index.html">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
+
+<h1>How to Transfer a ChatGPT Conversation to Gemini</h1>
+<p class="updated">Updated August 2026 · 5 min read</p>
+
+<p>Gemini is strong at long documents, search-grounded answers and anything touching the Google ecosystem — so it's a natural place to continue a conversation that started on ChatGPT. The catch: there's no official bridge between the two, and Google's own import feature has a major regional gap.</p>
+
+<p>Here are the three ways to do it, honestly compared.</p>
+
+<h2>Method 1: Copy-paste with a handoff prompt (free, manual)</h2>
+
+<p>Pasting a raw wall of text into Gemini gets you a summary of your own conversation — usually not what you want. Framing it as a continuation fixes that:</p>
+
+<pre>You are continuing a conversation that started on ChatGPT. Below is the
+full transcript. Do not summarize it back to me — just pick up where it
+left off, keeping the same context, decisions and tone.
+
+=== TRANSCRIPT START ===
+[paste your conversation here]
+=== TRANSCRIPT END ===</pre>
+
+<p>The manual method's friction points:</p>
+<ul>
+  <li><strong>UI junk comes along.</strong> Selecting a ChatGPT thread drags in button labels, citations and widget content that you'll delete by hand.</li>
+  <li><strong>Label the speakers</strong> (<code>[User]</code> / <code>[Assistant]</code>) or Gemini can conflate who said what.</li>
+  <li><strong>Long chats need pruning</strong> — keep the first message (the task) and the recent tail.</li>
+</ul>
+
+<h2>Method 2: Gemini's native import — with a big caveat</h2>
+
+<p>Since March 2026, the Gemini app can import conversation history from other AI assistants: you export your ChatGPT data as a ZIP archive and upload it. Two things to know before you plan around it:</p>
+
+<ul>
+  <li><strong>It's not available in the EEA, UK or Switzerland.</strong> If you're in Europe, the option simply doesn't appear.</li>
+  <li><strong>It's a bulk, one-time migration.</strong> It ingests your archive so Gemini knows your history — it's not designed for "continue this specific conversation right now", and the export-ZIP-upload loop is slow if that's all you wanted.</li>
+</ul>
+
+<p><strong>Good for:</strong> permanently switching to Gemini with your history, outside Europe.<br>
+<strong>Bad for:</strong> EU users (unavailable), and anyone who just wants to continue today's conversation.</p>
+
+<h2>Method 3: One-click transfer with a browser extension</h2>
+
+<p class="disclosure">Full disclosure: this is our tool — we built it in Valencia, Spain, partly because Method 2 doesn't exist here.</p>
+
+<p><a href="index.html">ThreadPort</a> is a Chrome and Edge extension that transfers the conversation you have open, in one click: it extracts the thread, strips the interface junk, labels the speakers, wraps everything in a handoff prompt, opens Gemini and pastes it ready to send. It works in all six directions between ChatGPT, Claude and Gemini.</p>
+
+<ul>
+  <li><strong>No servers, no account</strong> — the conversation moves between browser tabs and never leaves your machine.</li>
+  <li><strong>Works in the EU</strong> — no export ZIPs, no region locks.</li>
+  <li><strong>Free</strong> for 10 transfers a month.</li>
+</ul>
+
+<h2>Which method should you use?</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th></th><th>Copy-paste</th><th>Gemini ZIP import</th><th>ThreadPort</th></tr>
+  <tr><td>Moves the live conversation</td><td>Yes, manually</td><td>Not really (bulk archive)</td><td>Yes, one click</td></tr>
+  <tr><td>Available in the EU/UK</td><td>Yes</td><td><strong>No</strong></td><td>Yes</td></tr>
+  <tr><td>Cleans up UI junk</td><td>By hand</td><td>—</td><td>Automatic</td></tr>
+  <tr><td>Works both directions</td><td>Yes</td><td>No (into Gemini only)</td><td>Yes, all six routes</td></tr>
+  <tr><td>Speed for one conversation</td><td>Minutes</td><td>Slow (export + upload)</td><td>Seconds</td></tr>
+  <tr><td>Cost</td><td>Free</td><td>Free</td><td>Free (10/month)</td></tr>
+</table>
+</div>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Why doesn't Gemini's import work in the EU?</h3>
+<p>Google hasn't stated a reason publicly; the feature launched without EEA, UK and Switzerland availability, most likely for regulatory review reasons. Until that changes, European users need one of the other two methods.</p>
+
+<h3>Does Gemini understand a pasted ChatGPT conversation?</h3>
+<p>Yes — with the handoff framing, Gemini picks up mid-task and responds to the last open question. Without the framing, it tends to summarize the transcript instead of continuing it.</p>
+
+<h3>Can I also go the other way, from Gemini to ChatGPT?</h3>
+<p>Manually, yes — same technique. Gemini's own copy behavior adds hidden accessibility labels ("You said…") that you'll want to clean. ThreadPort handles the Gemini → ChatGPT direction (and Gemini → Claude) automatically.</p>
+
+<h3>What about moving conversations to Claude?</h3>
+<p>Claude has its own native option with different trade-offs — see our guide: <a href="transfer-chatgpt-to-claude.html">How to transfer a ChatGPT conversation to Claude</a>.</p>
+
+<div class="cta-box">
+  <p><strong>In the EU? You're not locked out.</strong> Move the conversation you're in right now — full context, one click.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome — Free</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
+</div>
+
+<footer>
+  <a href="index.html">ThreadPort</a> · <a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/megarampo/threadport/issues">Support</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why doesn't Gemini's conversation import work in the EU?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Gemini's native import of chat history from other AI assistants launched in March 2026 without availability in the EEA, UK and Switzerland. European users need to transfer conversations manually or with a browser extension." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Gemini understand a pasted ChatGPT conversation?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Framed with a handoff prompt as a continuation, Gemini picks up mid-task and responds to the last open question instead of summarizing the transcript." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I transfer a conversation from Gemini back to ChatGPT?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes, manually with the same handoff technique, or automatically with the ThreadPort extension, which supports all six directions between ChatGPT, Claude and Gemini." }
+    }
+  ]
+}
+</script>
+</body>
+</html>

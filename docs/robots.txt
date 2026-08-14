@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://megarampo.github.io/threadport/sitemap.xml
