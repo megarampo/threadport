@@ -89,20 +89,48 @@
       return true;
     }
 
-    const clear = () => {
-      document.execCommand("selectAll", false, null);
-      document.execCommand("delete", false, null);
+    const squash = (s) => (s || "").replace(/\s+/g, " ").trim();
+    const isEmpty = () => squash(el.innerText).length === 0;
+
+    // Empty the composer before inserting, or a leftover draft (or a previous
+    // transfer) gets concatenated with ours. Editors don't always honor the
+    // first attempt, so verify and escalate: selection-based delete, then a
+    // Selection API range delete, then wiping the DOM as a last resort.
+    const clear = async () => {
+      for (let attempt = 0; attempt < 3 && !isEmpty(); attempt++) {
+        el.focus();
+        if (attempt === 0) {
+          document.execCommand("selectAll", false, null);
+          document.execCommand("delete", false, null);
+        } else if (attempt === 1) {
+          const sel = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          document.execCommand("delete", false, null);
+          sel.removeAllRanges();
+        } else {
+          el.innerHTML = "";
+          el.dispatchEvent(
+            new InputEvent("input", { bubbles: true, inputType: "deleteContentBackward" })
+          );
+        }
+        await wait(120);
+      }
     };
-    // Rough check that the payload actually landed (innerText normalizes
-    // whitespace differently per editor, so compare on squashed lengths).
+    // Check that the payload landed — and only the payload. Too little means
+    // the editor dropped part of it; too much means a stale draft survived.
+    // innerText normalizes whitespace differently per editor, so compare on
+    // squashed lengths.
     const landed = () => {
-      const got = el.innerText.replace(/\s+/g, " ").trim().length;
-      const want = text.replace(/\s+/g, " ").trim().length;
-      return got >= want * 0.9;
+      const got = squash(el.innerText).length;
+      const want = squash(text).length;
+      return got >= want * 0.9 && got <= want * 1.1 + 200;
     };
 
     // Attempt 1: synthetic paste through the editor's own pipeline.
-    clear();
+    await clear();
     try {
       const dt = new DataTransfer();
       dt.setData("text/plain", text);
@@ -121,12 +149,13 @@
 
     // Attempt 2: execCommand insertText.
     el.focus();
-    clear();
+    await clear();
     document.execCommand("insertText", false, text);
     await wait(400);
     if (landed()) return true;
 
     // Attempt 3: brute force. Loses formatting niceties but delivers the text.
+    await clear();
     el.textContent = text;
     el.dispatchEvent(
       new InputEvent("input", { bubbles: true, inputType: "insertText", data: text })
