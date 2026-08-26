@@ -4,6 +4,12 @@
 "use strict";
 
 importScripts("common/platforms.js");
+importScripts("lib/ExtPay.js");
+
+// ExtensionPay handles Pro payments (Stripe under the hood). The background
+// listener must run on every worker start for payment status to sync.
+const extpay = ExtPay("threadport");
+extpay.startBackground();
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg && msg.type === "TP_TRANSFER") {

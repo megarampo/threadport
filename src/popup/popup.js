@@ -4,6 +4,22 @@
 
 const FREE_MONTHLY_LIMIT = 10;
 const REPORT_URL = "https://github.com/megarampo/threadport/issues";
+const extpay = ExtPay("threadport");
+
+// Paid status: ExtensionPay is the source of truth; tp_pro is the founder /
+// manual override. If ExtensionPay can't be reached, fall back to its own
+// locally cached status so paying users are never locked out offline.
+async function isPaid() {
+  const { tp_pro } = await chrome.storage.sync.get("tp_pro");
+  if (tp_pro) return true;
+  try {
+    const user = await extpay.getUser();
+    return !!user.paid;
+  } catch (_) {
+    const { extensionpay_user } = await chrome.storage.sync.get("extensionpay_user");
+    return !!(extensionpay_user && extensionpay_user.paid);
+  }
+}
 
 const $ = (id) => document.getElementById(id);
 const show = (id) => $(id).classList.remove("hidden");
@@ -18,11 +34,8 @@ function monthKey() {
 }
 
 async function getQuota() {
-  const { tp_quota, tp_pro } = await chrome.storage.sync.get([
-    "tp_quota",
-    "tp_pro"
-  ]);
-  if (tp_pro) return { pro: true, used: 0, left: Infinity };
+  if (await isPaid()) return { pro: true, used: 0, left: Infinity };
+  const { tp_quota } = await chrome.storage.sync.get("tp_quota");
   const q = tp_quota && tp_quota.month === monthKey() ? tp_quota : { month: monthKey(), used: 0 };
   return { pro: false, used: q.used, left: Math.max(0, FREE_MONTHLY_LIMIT - q.used) };
 }
@@ -72,8 +85,7 @@ async function init() {
   if (!quota.pro && quota.left <= 0) {
     show("state-limit");
     $("upgrade").addEventListener("click", () => {
-      // TODO(pro): open checkout page once Stripe/ExtensionPay is wired up.
-      chrome.tabs.create({ url: "https://threadport.app/pro" });
+      extpay.openPaymentPage();
     });
     return;
   }
