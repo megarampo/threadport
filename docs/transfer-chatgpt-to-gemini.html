@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How to Transfer a ChatGPT Conversation to Gemini (2026 Guide)</title>
-<meta name="description" content="Move a ChatGPT conversation to Google Gemini with full context: manual handoff prompt, Gemini's ZIP import (not available in the EU), or a one-click browser extension.">
+<meta name="description" content="Move a ChatGPT conversation to Google Gemini with full context: manual handoff prompt, Gemini's ZIP import (now rolling out in Europe), or a one-click browser extension.">
 <link rel="canonical" href="https://megarampo.github.io/threadport/transfer-chatgpt-to-gemini.html">
 <meta property="og:title" content="How to Transfer a ChatGPT Conversation to Gemini (2026 Guide)">
-<meta property="og:description" content="Gemini's native import doesn't work in the EU — here's every way to continue a ChatGPT conversation on Gemini, compared honestly.">
+<meta property="og:description" content="Gemini's native import finally reached Europe, but it's built for bulk migration — here's every way to continue a ChatGPT conversation on Gemini, compared honestly.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://megarampo.github.io/threadport/transfer-chatgpt-to-gemini.html">
 <style>
@@ -46,7 +46,7 @@
 <h1>How to Transfer a ChatGPT Conversation to Gemini</h1>
 <p class="updated">Updated August 2026 · 5 min read</p>
 
-<p>Gemini is strong at long documents, search-grounded answers and anything touching the Google ecosystem — so it's a natural place to continue a conversation that started on ChatGPT. The catch: there's no official bridge between the two, and Google's own import feature has a major regional gap.</p>
+<p>Gemini is strong at long documents, search-grounded answers and anything touching the Google ecosystem — so it's a natural place to continue a conversation that started on ChatGPT. The catch: Google's own import feature is built for migrating your whole history in bulk, not for continuing the conversation you're in — and it's still arriving in Europe country by country.</p>
 
 <p>Here are the three ways to do it, honestly compared.</p>
 
@@ -69,27 +69,29 @@ left off, keeping the same context, decisions and tone.
   <li><strong>Long chats need pruning</strong> — keep the first message (the task) and the recent tail.</li>
 </ul>
 
-<h2>Method 2: Gemini's native import — with a big caveat</h2>
+<h2>Method 2: Gemini's native import — with caveats</h2>
 
-<p>Since March 2026, the Gemini app can import conversation history from other AI assistants: you export your ChatGPT data as a ZIP archive and upload it. Two things to know before you plan around it:</p>
+<p>Since March 2026, the Gemini app can import conversation history from other AI assistants: you export your ChatGPT data as a ZIP archive (up to 5&nbsp;GB) and upload it. It launched US-first and began a phased European rollout in spring 2026 — by late August it had reached much of the EU, including Spain, where we are. Things to know before you plan around it:</p>
 
 <ul>
-  <li><strong>It's not available in the EEA, UK or Switzerland.</strong> If you're in Europe, the option simply doesn't appear.</li>
-  <li><strong>It's a bulk, one-time migration.</strong> It ingests your archive so Gemini knows your history — it's not designed for "continue this specific conversation right now", and the export-ZIP-upload loop is slow if that's all you wanted.</li>
+  <li><strong>It's a bulk, one-time migration.</strong> It ingests your whole archive so Gemini knows your history — it's not designed for "continue this specific conversation right now", and the export-ZIP-upload loop is slow if that's all you wanted. Users also report the imported chats land as a pile of new conversations, not sorted into your history by date.</li>
+  <li><strong>It's one-way.</strong> Into Gemini only — there's no equivalent for moving a Gemini conversation out.</li>
+  <li><strong>Read the data notice.</strong> Gemini's import screen states that imported chats are stored in your activity and used to improve Google's services, including training its generative AI models.</li>
+  <li><strong>Rollout is country by country.</strong> If you don't see the option yet, your region may still be waiting.</li>
 </ul>
 
-<p><strong>Good for:</strong> permanently switching to Gemini with your history, outside Europe.<br>
-<strong>Bad for:</strong> EU users (unavailable), and anyone who just wants to continue today's conversation.</p>
+<p><strong>Good for:</strong> permanently switching to Gemini with your full history.<br>
+<strong>Bad for:</strong> anyone who just wants to continue today's conversation, or who'd rather not feed their chat archive into Google's training pipeline.</p>
 
 <h2>Method 3: One-click transfer with a browser extension</h2>
 
-<p class="disclosure">Full disclosure: this is our tool — we built it in Valencia, Spain, partly because Method 2 doesn't exist here.</p>
+<p class="disclosure">Full disclosure: this is our tool — we built it in Valencia, Spain, back when Method 2 hadn't reached Europe yet.</p>
 
 <p><a href="index.html">ThreadPort</a> is a Chrome and Edge extension that transfers the conversation you have open, in one click: it extracts the thread, strips the interface junk, labels the speakers, wraps everything in a handoff prompt, opens Gemini and pastes it ready to send. It works in all six directions between ChatGPT, Claude and Gemini.</p>
 
 <ul>
   <li><strong>No servers, no account</strong> — the conversation moves between browser tabs and never leaves your machine.</li>
-  <li><strong>Works in the EU</strong> — no export ZIPs, no region locks.</li>
+  <li><strong>No export ZIPs, no bulk migration</strong> — just the conversation you're working on, and nothing enters anyone's training data.</li>
   <li><strong>Free</strong> for 10 transfers a month.</li>
 </ul>
 
@@ -99,7 +101,8 @@ left off, keeping the same context, decisions and tone.
 <table>
   <tr><th></th><th>Copy-paste</th><th>Gemini ZIP import</th><th>ThreadPort</th></tr>
   <tr><td>Moves the live conversation</td><td>Yes, manually</td><td>Not really (bulk archive)</td><td>Yes, one click</td></tr>
-  <tr><td>Available in the EU/UK</td><td>Yes</td><td><strong>No</strong></td><td>Yes</td></tr>
+  <tr><td>Available in the EU/UK</td><td>Yes</td><td>Rolling out (country by country)</td><td>Yes</td></tr>
+  <tr><td>Direction</td><td>Any</td><td>Into Gemini only</td><td>All six routes</td></tr>
   <tr><td>Cleans up UI junk</td><td>By hand</td><td>—</td><td>Automatic</td></tr>
   <tr><td>Works both directions</td><td>Yes</td><td>No (into Gemini only)</td><td>Yes, all six routes</td></tr>
   <tr><td>Speed for one conversation</td><td>Minutes</td><td>Slow (export + upload)</td><td>Seconds</td></tr>
@@ -109,8 +112,8 @@ left off, keeping the same context, decisions and tone.
 
 <h2>Frequently asked questions</h2>
 
-<h3>Why doesn't Gemini's import work in the EU?</h3>
-<p>Google hasn't stated a reason publicly; the feature launched without EEA, UK and Switzerland availability, most likely for regulatory review reasons. Until that changes, European users need one of the other two methods.</p>
+<h3>Does Gemini's import work in the EU now?</h3>
+<p>Increasingly, yes. It launched in March 2026 without EEA, UK or Switzerland availability, then Google began a phased European rollout in spring 2026. By late August it had reached much of the EU (we can see it in Spain), but it arrives country by country — if you don't see it, your region may still be waiting.</p>
 
 <h3>Does Gemini understand a pasted ChatGPT conversation?</h3>
 <p>Yes — with the handoff framing, Gemini picks up mid-task and responds to the last open question. Without the framing, it tends to summarize the transcript instead of continuing it.</p>
@@ -122,7 +125,7 @@ left off, keeping the same context, decisions and tone.
 <p>Claude has its own native option with different trade-offs — see our guide: <a href="transfer-chatgpt-to-claude.html">How to transfer a ChatGPT conversation to Claude</a>.</p>
 
 <div class="cta-box">
-  <p><strong>In the EU? You're not locked out.</strong> Move the conversation you're in right now — full context, one click.</p>
+  <p><strong>Moving one conversation, not your whole history?</strong> Move the chat you're in right now — full context, one click, nothing uploaded anywhere.</p>
   <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome — Free</a>
   <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
 </div>
@@ -138,8 +141,8 @@ left off, keeping the same context, decisions and tone.
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Why doesn't Gemini's conversation import work in the EU?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Gemini's native import of chat history from other AI assistants launched in March 2026 without availability in the EEA, UK and Switzerland. European users need to transfer conversations manually or with a browser extension." }
+      "name": "Does Gemini's conversation import work in the EU now?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Increasingly, yes. Gemini's native import launched in March 2026 without EEA, UK or Switzerland availability, and Google began a phased European rollout in spring 2026 that continues country by country. It remains a bulk, one-way migration into Gemini rather than a way to continue a single conversation." }
     },
     {
       "@type": "Question",
