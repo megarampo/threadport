@@ -161,6 +161,23 @@
       return added;
     };
 
+    // The page opens pinned to the newest messages, and the bottom section can
+    // be slow to re-render after the sweep. Snapshot that starting window
+    // first; anything the sweep misses gets stitched back at the end.
+    const tailSnapshot = new Map();
+    document.querySelectorAll("[data-message-author-role]").forEach((n) => {
+      const role =
+        n.getAttribute("data-message-author-role") === "user"
+          ? "user"
+          : "assistant";
+      const md = n.querySelector(".markdown");
+      const text = clean(md || n);
+      if (!text) return;
+      const key =
+        n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
+      tailSnapshot.set(key, { role, text });
+    });
+
     const originalTop = sc.scrollTop;
     try {
       // Climb to the very top. Older sections prepend and push scrollTop down,
@@ -178,7 +195,7 @@
       // over a second to render, so only count a round as "dry" when we are
       // pinned at the bottom and still found nothing new.
       let dry = 0;
-      for (let guard = 0; guard < 120 && dry < 3; guard++) {
+      for (let guard = 0; guard < 120 && dry < 5; guard++) {
         const atBottom =
           sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 5;
         sc.scrollTo(
@@ -193,6 +210,11 @@
     } finally {
       sc.scrollTo(0, originalTop);
     }
+    // Stitch: sweep result in conversation order, plus any newest-window
+    // messages the sweep didn't reach, appended in their original order.
+    tailSnapshot.forEach((m, key) => {
+      if (!seen.has(key)) seen.set(key, m);
+    });
     const swept = Array.from(seen.values());
     return swept.length >= quick.length ? swept : quick;
   }
