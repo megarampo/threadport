@@ -13,12 +13,17 @@
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg && msg.type === "TP_EXTRACT") {
-      const messages = tpExtract(platformId);
-      sendResponse({
-        platform: platformId,
-        title: document.title,
-        messages
-      });
+      // Async: ChatGPT may need a scroll sweep to defeat list virtualization.
+      Promise.resolve(tpExtractAsync(platformId))
+        .catch(() => tpExtract(platformId))
+        .then((messages) =>
+          sendResponse({
+            platform: platformId,
+            title: document.title,
+            messages
+          })
+        );
+      return true;
     }
     return false;
   });

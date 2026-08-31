@@ -24,9 +24,13 @@ async function isPaid() {
 const $ = (id) => document.getElementById(id);
 const show = (id) => $(id).classList.remove("hidden");
 const hideAll = () =>
-  ["state-unsupported", "state-empty", "state-ready", "state-limit"].forEach(
-    (id) => $(id).classList.add("hidden")
-  );
+  [
+    "state-unsupported",
+    "state-loading",
+    "state-empty",
+    "state-ready",
+    "state-limit"
+  ].forEach((id) => $(id).classList.add("hidden"));
 
 function monthKey() {
   const d = new Date();
@@ -65,12 +69,14 @@ async function init() {
     return;
   }
 
+  show("state-loading");
   let resp = null;
   try {
     resp = await chrome.tabs.sendMessage(tab.id, { type: "TP_EXTRACT" });
   } catch (_) {
     // Content script not loaded (e.g. extension just installed) — ask for reload.
   }
+  hideAll();
 
   if (!resp || !resp.messages || resp.messages.length === 0) {
     show("state-empty");

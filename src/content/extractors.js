@@ -113,6 +113,90 @@
     return messages;
   }
 
+  // ---------- ChatGPT full capture (August 2026 virtualization) ----------
+  // ChatGPT now loads long conversations in windowed sections: the DOM only
+  // holds ~10-30 messages around the viewport, and scrolling loads one end
+  // while UNLOADING the other. A plain querySelectorAll therefore sees only
+  // the current window. Fix: sweep the scroll container top→bottom, harvesting
+  // messages by data-message-id as each section renders, then restore scroll.
+  async function sweepChatGPT() {
+    const quick = extractChatGPT();
+    const probe = document.querySelector("[data-message-author-role]");
+    if (!probe) return quick;
+
+    let sc = probe.parentElement;
+    while (sc && sc !== document.body) {
+      const st = getComputedStyle(sc);
+      if (
+        (st.overflowY === "auto" || st.overflowY === "scroll") &&
+        sc.scrollHeight > sc.clientHeight
+      )
+        break;
+      sc = sc.parentElement;
+    }
+    // No scrollable container, or the whole thread fits on screen: the quick
+    // extraction already saw everything.
+    if (!sc || sc === document.body) return quick;
+    if (sc.scrollHeight <= sc.clientHeight * 1.2) return quick;
+
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const seen = new Map();
+    const harvest = () => {
+      let added = 0;
+      document.querySelectorAll("[data-message-author-role]").forEach((n) => {
+        const role =
+          n.getAttribute("data-message-author-role") === "user"
+            ? "user"
+            : "assistant";
+        const md = n.querySelector(".markdown");
+        const text = clean(md || n);
+        if (!text) return;
+        const key =
+          n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
+        if (!seen.has(key)) {
+          seen.set(key, { role, text });
+          added++;
+        }
+      });
+      return added;
+    };
+
+    const originalTop = sc.scrollTop;
+    try {
+      // Climb to the very top. Older sections prepend and push scrollTop down,
+      // so keep re-pinning until it stays at 0 across two checks.
+      for (let i = 0; i < 40; i++) {
+        sc.scrollTo(0, 0);
+        await wait(600);
+        if (sc.scrollTop === 0) {
+          await wait(600);
+          if (sc.scrollTop === 0) break;
+        }
+      }
+      harvest();
+      // Walk down harvesting each window. Sections near the bottom can take
+      // over a second to render, so only count a round as "dry" when we are
+      // pinned at the bottom and still found nothing new.
+      let dry = 0;
+      for (let guard = 0; guard < 120 && dry < 3; guard++) {
+        const atBottom =
+          sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 5;
+        sc.scrollTo(
+          0,
+          atBottom ? sc.scrollHeight : sc.scrollTop + sc.clientHeight * 0.7
+        );
+        await wait(atBottom ? 1200 : 500);
+        const added = harvest();
+        if (added === 0 && atBottom) dry++;
+        else if (added > 0) dry = 0;
+      }
+    } finally {
+      sc.scrollTo(0, originalTop);
+    }
+    const swept = Array.from(seen.values());
+    return swept.length >= quick.length ? swept : quick;
+  }
+
   const extractors = {
     chatgpt: extractChatGPT,
     claude: extractClaude,
@@ -128,5 +212,18 @@
       console.warn("[ThreadPort] extraction failed:", e);
       return [];
     }
+  };
+
+  // Async variant: on ChatGPT it sweeps the virtualized list to capture the
+  // full thread; elsewhere it's the plain synchronous extraction.
+  globalThis.tpExtractAsync = async function (platformId) {
+    if (platformId === "chatgpt") {
+      try {
+        return await sweepChatGPT();
+      } catch (e) {
+        console.warn("[ThreadPort] sweep failed, using quick extraction:", e);
+      }
+    }
+    return globalThis.tpExtract(platformId);
   };
 })();

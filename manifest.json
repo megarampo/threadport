@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ThreadPort — Move chats between ChatGPT, Claude & Gemini",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Move the FULL conversation between ChatGPT, Claude & Gemini in one click. Both directions, no summarizing. Works in the EU.",
   "permissions": ["storage"],
   "host_permissions": [
