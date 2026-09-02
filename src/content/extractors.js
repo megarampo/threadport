@@ -50,8 +50,16 @@
   // Some UIs (Mistral, Perplexity) render a timestamp under each user bubble
   // that innerText picks up as a trailing line: "22:15", "2:10 p.m.",
   // "30 ago,", "Aug 30", "ayer"… Drop the last line when it looks like one.
-  const STAMP_RE =
-    /^(\d{1,2}:\d{2}(\s*[ap]\.?\s?m\.?)?|\d{1,2}\s+[\p{L}.]{3,10},?|[\p{L}.]{3,10}\s+\d{1,2},?|ayer|yesterday|hoy|today)$/iu;
+  const STAMP_MONTH =
+    "(?:ene(?:ro)?|feb(?:rero|ruary)?|mar(?:zo|ch)?|abr(?:il)?|apr(?:il)?|may(?:o)?|jun(?:io|e)?|jul(?:io|y)?|ago(?:sto)?|aug(?:ust)?|sept?(?:iembre|ember)?|oct(?:ubre|ober)?|nov(?:iembre|ember)?|dic(?:iembre)?|dec(?:ember)?)\.?";
+  const STAMP_RE = new RegExp(
+    "^(\\d{1,2}:\\d{2}(\\s*[ap]\\.?\\s?m\\.?)?|\\d{1,2}\\s+" +
+      STAMP_MONTH +
+      ",?|" +
+      STAMP_MONTH +
+      "\\s+\\d{1,2},?|ayer|yesterday|hoy|today)$",
+    "i"
+  );
   const stripTrailingStamp = (text) => {
     const lines = text.split("\n");
     while (lines.length > 1 && STAMP_RE.test(lines[lines.length - 1].trim())) {
