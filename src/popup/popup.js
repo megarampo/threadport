@@ -26,6 +26,7 @@ const show = (id) => $(id).classList.remove("hidden");
 const hideAll = () =>
   [
     "state-unsupported",
+    "state-enable",
     "state-loading",
     "state-empty",
     "state-ready",
@@ -52,6 +53,45 @@ async function bumpQuota() {
   });
 }
 
+// Optional platforms (Mistral, Perplexity…) need their host permission
+// granted once. The request must run inside a click handler (user gesture).
+async function hasPlatformPermission(p) {
+  if (!p.optional) return true;
+  try {
+    return await chrome.permissions.contains({ origins: p.origins });
+  } catch (_) {
+    return false;
+  }
+}
+
+async function requestPlatformPermission(p) {
+  if (!p.optional) return true;
+  try {
+    return await chrome.permissions.request({ origins: p.origins });
+  } catch (_) {
+    return false;
+  }
+}
+
+// After a grant, tabs already open on that platform have no content script
+// yet (dynamic registration only covers future loads) — inject it now.
+async function injectContentScripts(tabId) {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: [
+        "src/common/platforms.js",
+        "src/common/transcript.js",
+        "src/content/extractors.js",
+        "src/content/injector.js",
+        "src/content/content.js"
+      ]
+    });
+  } catch (_) {
+    /* already injected or tab not scriptable */
+  }
+}
+
 function renderQuota(q) {
   $("quota").textContent = q.pro ? "Pro" : `${q.left}/${FREE_MONTHLY_LIMIT} free`;
 }
@@ -66,6 +106,19 @@ async function init() {
   hideAll();
   if (!platformId) {
     show("state-unsupported");
+    return;
+  }
+
+  const sourcePlatform = TP_PLATFORMS[platformId];
+  if (sourcePlatform.optional && !(await hasPlatformPermission(sourcePlatform))) {
+    show("state-enable");
+    $("enable-label").textContent = sourcePlatform.label;
+    $("enable-btn").onclick = async () => {
+      const ok = await requestPlatformPermission(sourcePlatform);
+      if (!ok) return;
+      await injectContentScripts(tab.id);
+      init();
+    };
     return;
   }
 
@@ -108,7 +161,13 @@ async function init() {
     .forEach((p) => {
       const btn = document.createElement("button");
       btn.textContent = "→ " + p.label;
-      btn.addEventListener("click", () => transfer(resp, p));
+      btn.addEventListener("click", async () => {
+        if (!(await hasPlatformPermission(p))) {
+          const ok = await requestPlatformPermission(p);
+          if (!ok) return;
+        }
+        transfer(resp, p);
+      });
       targetsEl.appendChild(btn);
     });
 

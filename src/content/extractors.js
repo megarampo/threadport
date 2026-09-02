@@ -219,10 +219,31 @@
     return swept.length >= quick.length ? swept : quick;
   }
 
+  // ---------- Mistral (Vibe, ex Le Chat) ----------
+  // Same semantic attributes as ChatGPT. Assistant text lives in a
+  // markdown-container (buttons stay outside); user bubbles carry a trailing
+  // timestamp ("22:15") that must be stripped.
+  function extractMistral() {
+    const nodes = document.querySelectorAll("[data-message-author-role]");
+    const messages = [];
+    nodes.forEach((n) => {
+      const role =
+        n.getAttribute("data-message-author-role") === "user"
+          ? "user"
+          : "assistant";
+      const md = n.querySelector('[class*="markdown-container"]');
+      let text = clean(md || n);
+      if (role === "user") text = text.replace(/\s*\d{1,2}:\d{2}\s*$/, "");
+      if (text) messages.push({ role, text });
+    });
+    return messages;
+  }
+
   const extractors = {
     chatgpt: extractChatGPT,
     claude: extractClaude,
-    gemini: extractGemini
+    gemini: extractGemini,
+    mistral: extractMistral
   };
 
   globalThis.tpExtract = function (platformId) {

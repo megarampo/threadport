@@ -11,6 +11,42 @@ importScripts("lib/ExtPay.js");
 const extpay = ExtPay("threadport");
 extpay.startBackground();
 
+// Optional platforms: keep dynamically registered content scripts in sync
+// with the host permissions the user has actually granted.
+const CONTENT_FILES = [
+  "src/common/platforms.js",
+  "src/common/transcript.js",
+  "src/content/extractors.js",
+  "src/content/injector.js",
+  "src/content/content.js"
+];
+
+async function syncOptionalScripts() {
+  try {
+    const registered = await chrome.scripting.getRegisteredContentScripts();
+    const have = new Set(registered.map((s) => s.id));
+    for (const p of Object.values(TP_PLATFORMS)) {
+      if (!p.optional) continue;
+      const id = "tp-" + p.id;
+      const granted = await chrome.permissions.contains({ origins: p.origins });
+      if (granted && !have.has(id)) {
+        await chrome.scripting.registerContentScripts([
+          { id, matches: p.origins, js: CONTENT_FILES, runAt: "document_idle" }
+        ]);
+      } else if (!granted && have.has(id)) {
+        await chrome.scripting.unregisterContentScripts({ ids: [id] });
+      }
+    }
+  } catch (e) {
+    console.warn("[ThreadPort] optional script sync failed:", e);
+  }
+}
+chrome.runtime.onInstalled.addListener(syncOptionalScripts);
+chrome.runtime.onStartup.addListener(syncOptionalScripts);
+chrome.permissions.onAdded.addListener(syncOptionalScripts);
+chrome.permissions.onRemoved.addListener(syncOptionalScripts);
+syncOptionalScripts();
+
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg && msg.type === "TP_TRANSFER") {
     const target = TP_PLATFORMS[msg.target];
@@ -27,6 +63,10 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
           created: Date.now()
         }
       })
+      // Optional targets: make sure their content script is registered
+      // before the new tab loads (the permission may have been granted a
+      // moment ago in the popup).
+      .then(() => (target.optional ? syncOptionalScripts() : null))
       .then(() => chrome.tabs.create({ url: target.newChatUrl }))
       .then(() => sendResponse({ ok: true }))
       .catch((e) => sendResponse({ ok: false, error: String(e) }));

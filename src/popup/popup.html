@@ -13,8 +13,15 @@
 
   <main>
     <div id="state-unsupported" class="state hidden">
-      <p>Open a conversation on <b>ChatGPT</b>, <b>Claude</b> or <b>Gemini</b>,
-      then click ThreadPort to move it to another AI.</p>
+      <p>Open a conversation on <b>ChatGPT</b>, <b>Claude</b>, <b>Gemini</b>
+      or <b>Mistral</b>, then click ThreadPort to move it to another AI.</p>
+    </div>
+
+    <div id="state-enable" class="state hidden">
+      <p>Enable <b id="enable-label"></b> support?</p>
+      <p class="dim">ThreadPort needs one-time permission to read and write
+      conversations on this site. Nothing leaves your browser.</p>
+      <button id="enable-btn" class="upgrade">Enable</button>
     </div>
 
     <div id="state-loading" class="state hidden">

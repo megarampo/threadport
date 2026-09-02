@@ -21,6 +21,19 @@ const TP_PLATFORMS = {
     label: "Gemini",
     newChatUrl: "https://gemini.google.com/app",
     hosts: ["gemini.google.com"]
+  },
+  // Optional platforms: their host permission is requested on first use
+  // (optional_host_permissions in the manifest) so adding them never forces
+  // existing users through Chrome's "extension disabled until re-approved"
+  // flow. The background worker registers their content scripts dynamically
+  // once the permission is granted.
+  mistral: {
+    id: "mistral",
+    label: "Mistral",
+    newChatUrl: "https://chat.mistral.ai/chat",
+    hosts: ["chat.mistral.ai"],
+    optional: true,
+    origins: ["https://chat.mistral.ai/*"]
   }
 };
 

@@ -20,6 +20,10 @@
       "rich-textarea .ql-editor",
       'div[contenteditable="true"].ql-editor',
       'rich-textarea div[contenteditable="true"]'
+    ],
+    mistral: [
+      'div.ProseMirror[contenteditable="true"]',
+      'div[contenteditable="true"][data-placeholder]'
     ]
   };
 
@@ -38,6 +42,12 @@
       'button[aria-label*="Send"]',
       'button[aria-label*="Enviar"]',
       ".send-button"
+    ],
+    mistral: [
+      'button[aria-label*="Send"]',
+      'button[aria-label*="Enviar"]',
+      'button[aria-label*="Envoyer"]',
+      'form button[type="submit"]'
     ]
   };
 
