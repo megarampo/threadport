@@ -49,9 +49,9 @@ main { padding: 14px; }
 .detected { font-size: 13px; }
 .send-to { margin-top: 10px; }
 
-.targets { display: flex; gap: 8px; margin-top: 8px; }
+.targets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .targets button {
-  flex: 1;
+  white-space: nowrap;
   padding: 9px 4px;
   border: 1px solid var(--border);
   border-radius: 8px;

@@ -123,11 +123,22 @@ async function init() {
   }
 
   show("state-loading");
+  const extract = () => chrome.tabs.sendMessage(tab.id, { type: "TP_EXTRACT" });
   let resp = null;
   try {
-    resp = await chrome.tabs.sendMessage(tab.id, { type: "TP_EXTRACT" });
+    resp = await extract();
   } catch (_) {
-    // Content script not loaded (e.g. extension just installed) — ask for reload.
+    // No content script in this tab. On optional platforms that's expected
+    // right after the permission grant (Chrome closes the popup during the
+    // prompt): inject it now and retry instead of asking for a reload.
+    if (sourcePlatform.optional) {
+      await injectContentScripts(tab.id);
+      try {
+        resp = await extract();
+      } catch (_) {
+        /* fall through to the reload hint */
+      }
+    }
   }
   hideAll();
 
