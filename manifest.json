@@ -5,7 +5,8 @@
   "description": "Move the FULL conversation between ChatGPT, Claude & Gemini in one click. Both directions, no summarizing. Works in the EU.",
   "permissions": [
     "storage",
-    "scripting"
+    "scripting",
+    "activeTab"
   ],
   "host_permissions": [
     "https://chatgpt.com/*",
