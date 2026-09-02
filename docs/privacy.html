@@ -18,14 +18,14 @@
 </head>
 <body>
 <h1>ThreadPort — Privacy Policy</h1>
-<p class="updated">Last updated: August 26, 2026</p>
+<p class="updated">Last updated: September 2, 2026</p>
 
 <h2>The short version</h2>
 <p>ThreadPort does not collect, transmit, remotely store, sell, or share any of your data. Everything the extension does happens locally in your browser. ThreadPort has no servers.</p>
 
 <h2>What ThreadPort processes, and where</h2>
 <ul>
-  <li><b>Conversation text.</b> When you click a transfer button, ThreadPort reads the messages of the AI conversation visible in your current tab and writes them into the message box of the destination AI site you chose. This text is held briefly in your browser's local extension storage (<code>chrome.storage.local</code>) during the handoff and is deleted immediately after it is inserted. It is never sent to us or to any third party.</li>
+  <li><b>Conversation text.</b> When you click a transfer button, ThreadPort reads the messages of the AI conversation visible in your current tab (ChatGPT, Claude, Gemini, Perplexity or Mistral) and writes them into the message box of the destination AI site you chose. This text is held briefly in your browser's local extension storage (<code>chrome.storage.local</code>) during the handoff and is deleted immediately after it is inserted. It is never sent to us or to any third party.</li>
   <li><b>Usage counter.</b> A number (how many transfers you made this month) is stored in your browser's extension storage (<code>chrome.storage.sync</code>) to enforce the free plan limit. It contains no conversation content.</li>
   <li><b>Settings.</b> Your preferences (e.g. auto-send on/off) are stored the same way.</li>
 </ul>
@@ -41,7 +41,11 @@
 <h2>Permissions explained</h2>
 <ul>
   <li><b>storage</b> — save your settings and the monthly usage counter</li>
-  <li><b>Access to chatgpt.com, claude.ai, gemini.google.com</b> — read the conversation on the source site and insert it on the destination site. ThreadPort only runs on these three domains.</li>
+  <li><b>Access to chatgpt.com, claude.ai, gemini.google.com</b> — read the conversation on the source site and insert it on the destination site.</li>
+  <li><b>Optional access to perplexity.ai and chat.mistral.ai</b> — only requested when you first choose to transfer from or to Perplexity or Mistral. Until you grant it, ThreadPort does not run on those sites at all.</li>
+  <li><b>activeTab</b> — lets the popup see which AI site the current tab is on when you click the ThreadPort icon (and only then).</li>
+  <li><b>scripting</b> — used solely to start ThreadPort on an optional site right after you grant its permission, so you don't have to reload the page.</li>
+  <li><b>Access to extensionpay.com</b> — check whether your Pro plan is active (see Payments below).</li>
 </ul>
 
 <h2>Payments (Pro plan)</h2>
