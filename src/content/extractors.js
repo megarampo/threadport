@@ -17,6 +17,7 @@
     '[class*="cdk-visually-hidden"]', // Gemini a11y labels ("Has dicho" / "You said")
     '[class*="screen-reader"]',
     '[data-testid*="citation"]',
+    '[class*="citation"]', // Perplexity inline source chips
     // Gemini in-message components that aren't message text:
     "old-weather-card",
     "sources-list",
@@ -239,11 +240,32 @@
     return messages;
   }
 
+  // ---------- Perplexity ----------
+  // Queries render as `group/user-bubble` blocks (with a trailing timestamp
+  // like "2:10 p.m."); answers render as `.prose` blocks. Both appear in
+  // document order, so one combined query yields the interleaved thread.
+  function extractPerplexity() {
+    const nodes = document.querySelectorAll(
+      '[class~="group/user-bubble"], .prose'
+    );
+    const messages = [];
+    nodes.forEach((n) => {
+      const isUser = n.classList.contains("group/user-bubble");
+      let text = clean(n);
+      if (isUser) {
+        text = text.replace(/\s*\d{1,2}:\d{2}\s*[ap]\.?\s?m\.?\s*$/i, "");
+      }
+      if (text) messages.push({ role: isUser ? "user" : "assistant", text });
+    });
+    return messages;
+  }
+
   const extractors = {
     chatgpt: extractChatGPT,
     claude: extractClaude,
     gemini: extractGemini,
-    mistral: extractMistral
+    mistral: extractMistral,
+    perplexity: extractPerplexity
   };
 
   globalThis.tpExtract = function (platformId) {

@@ -24,6 +24,11 @@
     mistral: [
       'div.ProseMirror[contenteditable="true"]',
       'div[contenteditable="true"][data-placeholder]'
+    ],
+    perplexity: [
+      "#ask-input",
+      'div[contenteditable="true"][data-lexical-editor="true"]',
+      'div[role="textbox"][contenteditable="true"]'
     ]
   };
 
@@ -48,6 +53,11 @@
       'button[aria-label*="Enviar"]',
       'button[aria-label*="Envoyer"]',
       'form button[type="submit"]'
+    ],
+    perplexity: [
+      'button[aria-label*="Submit"]',
+      'button[aria-label*="Enviar"]',
+      'button[aria-label*="Send"]'
     ]
   };
 
@@ -107,12 +117,23 @@
     // first attempt, so verify and escalate: selection-based delete, then a
     // Selection API range delete, then wiping the DOM as a last resort.
     const clear = async () => {
-      for (let attempt = 0; attempt < 3 && !isEmpty(); attempt++) {
+      for (let attempt = 0; attempt < 4 && !isEmpty(); attempt++) {
         el.focus();
         if (attempt === 0) {
           document.execCommand("selectAll", false, null);
           document.execCommand("delete", false, null);
         } else if (attempt === 1) {
+          // Lexical (Perplexity) ignores execCommand("delete") but honors a
+          // beforeinput deletion over the current selection.
+          document.execCommand("selectAll", false, null);
+          el.dispatchEvent(
+            new InputEvent("beforeinput", {
+              inputType: "deleteContentBackward",
+              bubbles: true,
+              cancelable: true
+            })
+          );
+        } else if (attempt === 2) {
           const sel = window.getSelection();
           const range = document.createRange();
           range.selectNodeContents(el);

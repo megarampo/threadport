@@ -34,6 +34,14 @@ const TP_PLATFORMS = {
     hosts: ["chat.mistral.ai"],
     optional: true,
     origins: ["https://chat.mistral.ai/*"]
+  },
+  perplexity: {
+    id: "perplexity",
+    label: "Perplexity",
+    newChatUrl: "https://www.perplexity.ai/",
+    hosts: ["perplexity.ai"],
+    optional: true,
+    origins: ["https://www.perplexity.ai/*"]
   }
 };
 
