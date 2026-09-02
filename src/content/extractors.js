@@ -253,8 +253,14 @@
         n.getAttribute("data-message-author-role") === "user"
           ? "user"
           : "assistant";
-      const md = n.querySelector('[class*="markdown-container"]');
-      let text = clean(md || n);
+      // Assistant text lives in the markdown container; user text in a
+      // whitespace-pre-wrap span (the hover row next to it holds a
+      // timestamp like "30 ago, 22:46" that must not leak in).
+      const body =
+        role === "user"
+          ? n.querySelector(".whitespace-pre-wrap")
+          : n.querySelector('[class*="markdown-container"]');
+      let text = clean(body || n);
       if (role === "user") text = stripTrailingStamp(text);
       if (text) messages.push({ role, text });
     });
@@ -272,7 +278,10 @@
     const messages = [];
     nodes.forEach((n) => {
       const isUser = n.classList.contains("group/user-bubble");
-      let text = clean(n);
+      // User text lives in a whitespace-pre-line span; a sibling span holds
+      // the timestamp ("2:10 p.m.") and must not leak in.
+      const body = isUser ? n.querySelector(".whitespace-pre-line") : null;
+      let text = clean(body || n);
       if (isUser) text = stripTrailingStamp(text);
       if (text) messages.push({ role: isUser ? "user" : "assistant", text });
     });
