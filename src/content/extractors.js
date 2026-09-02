@@ -47,6 +47,19 @@
     return text;
   };
 
+  // Some UIs (Mistral, Perplexity) render a timestamp under each user bubble
+  // that innerText picks up as a trailing line: "22:15", "2:10 p.m.",
+  // "30 ago,", "Aug 30", "ayer"… Drop the last line when it looks like one.
+  const STAMP_RE =
+    /^(\d{1,2}:\d{2}(\s*[ap]\.?\s?m\.?)?|\d{1,2}\s+[\p{L}.]{3,10},?|[\p{L}.]{3,10}\s+\d{1,2},?|ayer|yesterday|hoy|today)$/iu;
+  const stripTrailingStamp = (text) => {
+    const lines = text.split("\n");
+    while (lines.length > 1 && STAMP_RE.test(lines[lines.length - 1].trim())) {
+      lines.pop();
+    }
+    return lines.join("\n").trim();
+  };
+
   // ---------- ChatGPT ----------
   // data-message-author-role has been stable across redesigns for years.
   function extractChatGPT() {
@@ -234,7 +247,7 @@
           : "assistant";
       const md = n.querySelector('[class*="markdown-container"]');
       let text = clean(md || n);
-      if (role === "user") text = text.replace(/\s*\d{1,2}:\d{2}\s*$/, "");
+      if (role === "user") text = stripTrailingStamp(text);
       if (text) messages.push({ role, text });
     });
     return messages;
@@ -252,9 +265,7 @@
     nodes.forEach((n) => {
       const isUser = n.classList.contains("group/user-bubble");
       let text = clean(n);
-      if (isUser) {
-        text = text.replace(/\s*\d{1,2}:\d{2}\s*[ap]\.?\s?m\.?\s*$/i, "");
-      }
+      if (isUser) text = stripTrailingStamp(text);
       if (text) messages.push({ role: isUser ? "user" : "assistant", text });
     });
     return messages;
