@@ -35,6 +35,17 @@ header {
   border-bottom: 1px solid var(--border);
 }
 header h1 { font-size: 14px; font-weight: 650; flex: 1; }
+.lang { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.lang button {
+  background: none;
+  border: 0;
+  padding: 2px 7px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--dim);
+  cursor: pointer;
+}
+.lang button.active { background: var(--accent); color: var(--accent-fg); }
 .quota {
   font-size: 11px;
   color: var(--dim);
@@ -62,6 +73,52 @@ main { padding: 14px; }
   cursor: pointer;
 }
 .targets button:hover { border-color: var(--accent); color: var(--accent); }
+.targets button.same { grid-column: 1 / -1; font-weight: 500; }
+
+.export {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+}
+.export.hidden { display: none; }
+.export .dim { margin-top: 0; }
+.export .label { display: block; margin-bottom: 3px; }
+.export .sep { margin: 0 6px; }
+.link-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.link-btn:hover { text-decoration: underline; }
+
+.review {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--chip);
+  font-size: 11.5px;
+  color: var(--dim);
+}
+.review.hidden { display: none; }
+.review span { flex: 1; }
+.review button {
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  color: var(--dim);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
 
 .autosend {
   display: flex;

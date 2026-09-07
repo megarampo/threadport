@@ -8,53 +8,59 @@
   <header>
     <img src="../../icons/icon32.png" alt="" width="20" height="20" />
     <h1>ThreadPort</h1>
-    <span id="quota" class="quota" title="Free transfers left this month"></span>
+    <span class="lang" data-i18n-title="langTitle">
+      <button type="button" data-lang="en">EN</button><button type="button" data-lang="es">ES</button>
+    </span>
+    <span id="quota" class="quota" data-i18n-title="quotaTitle"></span>
   </header>
 
   <main>
+    <div id="review" class="review hidden">
+      <span data-i18n="review"></span>
+      <button id="review-dismiss" data-i18n-title="reviewDismiss">×</button>
+    </div>
+
     <div id="state-unsupported" class="state hidden">
-      <p>Open a conversation on <b>ChatGPT</b>, <b>Claude</b>, <b>Gemini</b>,
-      <b>Mistral</b> or <b>Perplexity</b>, then click ThreadPort to move it to
-      another AI.</p>
+      <p data-i18n="unsupported"></p>
     </div>
 
     <div id="state-enable" class="state hidden">
-      <p>Enable <b id="enable-label"></b> support?</p>
-      <p class="dim">ThreadPort needs one-time permission to read and write
-      conversations on this site. Nothing leaves your browser.</p>
-      <button id="enable-btn" class="upgrade">Enable</button>
+      <p id="enable-text"></p>
+      <p class="dim" data-i18n="enableDim"></p>
+      <button id="enable-btn" class="upgrade" data-i18n="enableBtn"></button>
     </div>
 
     <div id="state-loading" class="state hidden">
-      <p>Reading the conversation…</p>
-      <p class="dim">Long chats take a few extra seconds: we scroll through the
-      whole thread so nothing gets left behind.</p>
+      <p data-i18n="loading"></p>
+      <p class="dim" data-i18n="loadingDim"></p>
     </div>
 
     <div id="state-empty" class="state hidden">
-      <p>No conversation detected on this page yet.</p>
-      <p class="dim">If the chat is clearly visible, the site may have updated
-      its layout — <a id="report-link" href="#">report it</a> and we'll ship a
-      fix fast.</p>
+      <p id="empty-text" data-i18n="empty"></p>
+      <p class="dim" data-i18n="emptyDim"></p>
     </div>
 
     <div id="state-ready" class="state hidden">
-      <p class="detected">
-        <span id="source-label"></span> conversation ·
-        <b id="msg-count"></b> messages
-      </p>
-      <p class="dim send-to">Continue this conversation on:</p>
+      <p id="detected" class="detected"></p>
+      <p class="dim send-to" data-i18n="continueOn"></p>
       <div id="targets" class="targets"></div>
       <label class="autosend">
         <input type="checkbox" id="autosend" />
-        Send automatically (otherwise it's pasted for you to review)
+        <span data-i18n="autosend"></span>
       </label>
     </div>
 
     <div id="state-limit" class="state hidden">
-      <p><b>Free limit reached for this month.</b></p>
-      <p class="dim">Upgrade to Pro for unlimited transfers.</p>
-      <button id="upgrade" class="upgrade">Upgrade to Pro</button>
+      <p data-i18n="limitTitle"></p>
+      <p class="dim" data-i18n="limitDim"></p>
+      <button id="upgrade" class="upgrade" data-i18n="upgrade"></button>
+    </div>
+
+    <div id="export" class="export hidden">
+      <span class="dim label" data-i18n="saveCopy"></span>
+      <button id="copy-md" class="link-btn" data-i18n="copyMd"></button>
+      <span class="dim sep">·</span>
+      <button id="download-md" class="link-btn" data-i18n="downloadMd"></button>
     </div>
 
     <p id="status" class="status hidden"></p>
@@ -63,5 +69,6 @@
 <script src="../lib/ExtPay.js"></script>
 <script src="../common/platforms.js"></script>
 <script src="../common/transcript.js"></script>
+<script src="i18n.js"></script>
 <script src="popup.js"></script>
 </html>

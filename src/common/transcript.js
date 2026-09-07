@@ -125,8 +125,32 @@ function tpBuildHandoff(sourceLabel, targetLabel, rawMessages, charBudget) {
   return { text: header + body + footer, truncated };
 }
 
+// Plain Markdown export of the whole conversation (no truncation): a title,
+// a provenance line and one "## User" / "## Assistant" section per message.
+function tpBuildMarkdown(sourceLabel, title, rawMessages) {
+  const { messages, hops } = tpUnwrap(rawMessages, sourceLabel);
+  const startedOn = hops.length ? hops[0] : sourceLabel;
+  const date = new Date().toISOString().slice(0, 10);
+  const heading = (title || "").trim() || `${sourceLabel} conversation`;
+  const lines = [
+    `# ${heading}`,
+    "",
+    `*Exported from ${sourceLabel} with ThreadPort on ${date}` +
+      (hops.length ? ` · started on ${startedOn}` : "") +
+      ` · ${messages.length} messages*`,
+    ""
+  ];
+  messages.forEach((m) => {
+    let who = m.role === "user" ? "User" : "Assistant";
+    if (hops.length && m.role === "assistant") who += ` (${m.platform || sourceLabel})`;
+    lines.push(`## ${who}`, "", m.text.trim(), "");
+  });
+  return lines.join("\n");
+}
+
 if (typeof globalThis !== "undefined") {
   globalThis.tpBuildHandoff = tpBuildHandoff;
+  globalThis.tpBuildMarkdown = tpBuildMarkdown;
   globalThis.tpUnwrap = tpUnwrap;
   globalThis.TP_DEFAULT_CHAR_BUDGET = TP_DEFAULT_CHAR_BUDGET;
 }

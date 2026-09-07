@@ -30,10 +30,33 @@
     "video"
   ].join(", ");
 
-  const clean = (el) => {
+  // Filenames as chat UIs show them on attachment chips.
+  const FILE_RE =
+    /^[\w\-. ()\[\]]{1,120}\.(pdf|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|ya?ml|zip|png|jpe?g|gif|webp|svg|py|js|ts|tsx|jsx|java|c|cpp|h|cs|go|rs|rb|php|html|css|sql|ipynb|log)$/i;
+
+  // User turns render attachments as chips (filename + type/size label) next
+  // to the text. Remove the whole chip so only the note we add remains.
+  const stripFileChips = (root) => {
+    root.querySelectorAll("span, div, a, p").forEach((el) => {
+      if (!root.contains(el)) return; // already removed as part of an earlier chip
+      const t = (el.textContent || "").trim();
+      if (t.length > 130 || !FILE_RE.test(t)) return;
+      let node = el;
+      while (node.parentElement && node.parentElement !== root) {
+        const pt = (node.parentElement.textContent || "").trim();
+        if (pt.length > t.length + 24) break;
+        node = node.parentElement;
+      }
+      if (node !== root) node.remove();
+    });
+  };
+
+  const clean = (el, opts) => {
     if (!el) return "";
     const clone = el.cloneNode(true);
     clone.querySelectorAll(NOISE_SELECTORS).forEach((n) => n.remove());
+    if (opts && opts.user) stripFileChips(clone);
+    fenceCodeBlocks(clone);
     // innerText only computes line breaks for rendered nodes, so the clone
     // must briefly live in the DOM (off-screen).
     clone.style.position = "absolute";
@@ -41,10 +64,112 @@
     document.body.appendChild(clone);
     const text = clone.innerText
       .replace(/ /g, " ")
+      .replace(/\n[ \t]+\n/g, "\n\n") // whitespace-only lines (gaps between inline chips)
       .replace(/\n{3,}/g, "\n\n") // collapse blank-line explosions from nested blocks
       .trim();
     clone.remove();
     return text;
+  };
+
+  // Language labels that chat UIs render around a code block ("python",
+  // "bash"…). ChatGPT and Claude put them inside <pre>, Gemini / Perplexity /
+  // Mistral in a header row next to it. Either way they are chrome, not text.
+  const LANG_LABELS = new Set(
+    (
+      "python javascript js typescript ts bash sh shell zsh html css json yaml yml " +
+      "sql java c cpp c++ csharp c# go golang rust ruby php swift kotlin r markdown " +
+      "md text plaintext plain txt xml toml ini dockerfile docker powershell ps1 jsx " +
+      "tsx scss sass lua perl dart scala haskell matlab objective-c objc diff " +
+      "makefile nginx http graphql regex code"
+    ).split(" ")
+  );
+  const isLangLabel = (s) => LANG_LABELS.has((s || "").trim().toLowerCase());
+
+  // Rewrite every <pre> as a fenced Markdown block so the destination AI sees
+  // real code (and the Markdown export is valid), dropping the label / copy
+  // chrome around it. Runs on the detached clone, before innerText.
+  const fenceCodeBlocks = (root) => {
+    root.querySelectorAll("pre").forEach((pre) => {
+      const code = pre.querySelector("code");
+      let lang = "";
+      const m = /language-([\w+#-]+)/.exec((code && code.className) || "");
+      if (m) lang = m[1].toLowerCase();
+      const lines = ((code || pre).textContent || "").replace(/\r/g, "").split("\n");
+      while (lines.length && !lines[0].trim()) lines.shift();
+      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
+      if (!code && lines.length && isLangLabel(lines[0])) {
+        lang = lang || lines[0].trim().toLowerCase();
+        lines.shift();
+      }
+      const parent = pre.parentElement;
+      if (parent) {
+        Array.from(parent.children).forEach((sib) => {
+          if (sib !== pre && isLangLabel(sib.textContent)) {
+            lang = lang || sib.textContent.trim().toLowerCase();
+            sib.remove();
+          }
+        });
+      }
+      const fenced = document.createElement("div");
+      fenced.style.whiteSpace = "pre-wrap";
+      fenced.textContent = "```" + lang + "\n" + lines.join("\n") + "\n```";
+      pre.replaceWith(fenced);
+    });
+  };
+
+  // Attachments never travel (we move text), but the destination AI should
+  // know they existed. Detect file chips (an element whose whole text is a
+  // filename) and real images (not avatars / icons) inside a user turn.
+  const attachmentNotes = (scope) => {
+    const notes = [];
+    const seen = new Set();
+    if (!scope) return notes;
+    scope.querySelectorAll("span, div, a, p, button").forEach((el) => {
+      const t = (el.textContent || "").trim();
+      if (t.length > 130 || !FILE_RE.test(t) || seen.has(t)) return;
+      seen.add(t);
+      notes.push("[user attached: " + t + "]");
+    });
+    scope.querySelectorAll("img").forEach((img) => {
+      const r = img.getBoundingClientRect();
+      if (r.width < 48 || r.height < 48) return;
+      const alt = (img.getAttribute("alt") || "").trim();
+      const hint = alt + " " + (img.className || "") + " " + (img.currentSrc || img.src || "");
+      if (/avatar|emoji|icon|logo|profile/i.test(hint)) return;
+      const named = alt && !/^(uploaded image|image|imagen|img)$/i.test(alt);
+      const key = "img:" + (named ? alt : "");
+      if (seen.has(key)) return;
+      seen.add(key);
+      notes.push(named ? "[user attached image: " + alt + "]" : "[user attached an image]");
+    });
+    return notes;
+  };
+  const withAttachments = (node, text) => {
+    const scope = node.closest("article, [data-test-render-count]") || node;
+    const notes = attachmentNotes(scope);
+    if (!notes.length) return text;
+    // A file chip's name often shows up in the text too — keep it once.
+    const names = new Set(notes.map((x) => x.replace(/^\[user attached: (.*)\]$/, "$1")));
+    const body = (text || "")
+      .split("\n")
+      .filter((l) => !names.has(l.trim()))
+      .join("\n")
+      .trim();
+    return notes.join("\n") + (body ? "\n" + body : "");
+  };
+
+  // ChatGPT turn → {role, text, key}. Shared by the quick extractor and the
+  // virtualization sweep so both see the same text and dedupe on the same key.
+  const readChatGPTNode = (n) => {
+    const role =
+      n.getAttribute("data-message-author-role") === "user" ? "user" : "assistant";
+    // Prefer the rendered markdown container when present (skips buttons etc).
+    const md = n.querySelector(".markdown");
+    let text = clean(md || n, { user: role === "user" });
+    if (role === "user") text = withAttachments(n, text);
+    if (!text) return null;
+    const key = n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
+    return { role, text, key };
   };
 
   // Some UIs (Mistral, Perplexity) render a timestamp under each user bubble
@@ -74,14 +199,8 @@
     const nodes = document.querySelectorAll("[data-message-author-role]");
     const messages = [];
     nodes.forEach((n) => {
-      const role =
-        n.getAttribute("data-message-author-role") === "user"
-          ? "user"
-          : "assistant";
-      // Prefer the rendered markdown container when present (skips buttons etc).
-      const md = n.querySelector(".markdown");
-      const text = clean(md || n);
-      if (text) messages.push({ role, text });
+      const m = readChatGPTNode(n);
+      if (m) messages.push({ role: m.role, text: m.text });
     });
     return messages;
   }
@@ -93,13 +212,11 @@
       '[data-testid="user-message"], .font-claude-message, .font-claude-response';
     let nodes = Array.from(document.querySelectorAll(sel));
     let messages = nodes
-      .map((n) => ({
-        role:
-          n.getAttribute("data-testid") === "user-message"
-            ? "user"
-            : "assistant",
-        text: clean(n)
-      }))
+      .map((n) => {
+        const isUser = n.getAttribute("data-testid") === "user-message";
+        const text = clean(n, { user: isUser });
+        return { role: isUser ? "user" : "assistant", text: isUser ? withAttachments(n, text) : text };
+      })
       .filter((m) => m.text);
     if (messages.length) return messages;
 
@@ -124,7 +241,7 @@
     nodes.forEach((n) => {
       if (n.tagName.toLowerCase() === "user-query") {
         const q = n.querySelector(".query-text");
-        const text = clean(q || n);
+        const text = withAttachments(n, clean(q || n, { user: true }));
         if (text) messages.push({ role: "user", text });
       } else {
         const c = n.querySelector("message-content, .markdown");
@@ -166,17 +283,10 @@
     const harvest = () => {
       let added = 0;
       document.querySelectorAll("[data-message-author-role]").forEach((n) => {
-        const role =
-          n.getAttribute("data-message-author-role") === "user"
-            ? "user"
-            : "assistant";
-        const md = n.querySelector(".markdown");
-        const text = clean(md || n);
-        if (!text) return;
-        const key =
-          n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
-        if (!seen.has(key)) {
-          seen.set(key, { role, text });
+        const m = readChatGPTNode(n);
+        if (!m) return;
+        if (!seen.has(m.key)) {
+          seen.set(m.key, { role: m.role, text: m.text });
           added++;
         }
       });
@@ -188,16 +298,8 @@
     // first; anything the sweep misses gets stitched back at the end.
     const tailSnapshot = new Map();
     document.querySelectorAll("[data-message-author-role]").forEach((n) => {
-      const role =
-        n.getAttribute("data-message-author-role") === "user"
-          ? "user"
-          : "assistant";
-      const md = n.querySelector(".markdown");
-      const text = clean(md || n);
-      if (!text) return;
-      const key =
-        n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
-      tailSnapshot.set(key, { role, text });
+      const m = readChatGPTNode(n);
+      if (m) tailSnapshot.set(m.key, { role: m.role, text: m.text });
     });
 
     const originalTop = sc.scrollTop;
@@ -260,8 +362,8 @@
         role === "user"
           ? n.querySelector(".whitespace-pre-wrap")
           : n.querySelector('[class*="markdown-container"]');
-      let text = clean(body || n);
-      if (role === "user") text = stripTrailingStamp(text);
+      let text = clean(body || n, { user: role === "user" });
+      if (role === "user") text = withAttachments(n, stripTrailingStamp(text));
       if (text) messages.push({ role, text });
     });
     return messages;
@@ -281,8 +383,8 @@
       // User text lives in a whitespace-pre-line span; a sibling span holds
       // the timestamp ("2:10 p.m.") and must not leak in.
       const body = isUser ? n.querySelector(".whitespace-pre-line") : null;
-      let text = clean(body || n);
-      if (isUser) text = stripTrailingStamp(text);
+      let text = clean(body || n, { user: isUser });
+      if (isUser) text = withAttachments(n, stripTrailingStamp(text));
       if (text) messages.push({ role: isUser ? "user" : "assistant", text });
     });
     return messages;

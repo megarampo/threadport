@@ -4,6 +4,11 @@
 
 const FREE_MONTHLY_LIMIT = 10;
 const REPORT_URL = "https://github.com/megarampo/threadport/issues";
+// One-time review ask, shown after this many successful transfers.
+const REVIEW_AFTER = 3;
+const REVIEW_URL = navigator.userAgent.includes("Edg/")
+  ? "https://microsoftedge.microsoft.com/addons/detail/hfegopjfooabblaccgifjfomanedeapc"
+  : "https://chromewebstore.google.com/detail/kclkpikpgnldnpnmojkcnoclcihmhhmd/reviews";
 const extpay = ExtPay("threadport");
 
 // Paid status: ExtensionPay is the source of truth; tp_pro is the founder /
@@ -30,7 +35,8 @@ const hideAll = () =>
     "state-loading",
     "state-empty",
     "state-ready",
-    "state-limit"
+    "state-limit",
+    "export"
   ].forEach((id) => $(id).classList.add("hidden"));
 
 function monthKey() {
@@ -92,11 +98,92 @@ async function injectContentScripts(tabId) {
   }
 }
 
+// Lifetime transfer count (Pro included) — only used for the review ask.
+async function bumpTransfers() {
+  const { tp_transfers = 0 } = await chrome.storage.sync.get("tp_transfers");
+  await chrome.storage.sync.set({ tp_transfers: tp_transfers + 1 });
+}
+
+async function maybeShowReview() {
+  const { tp_transfers = 0, tp_review = null } = await chrome.storage.sync.get([
+    "tp_transfers",
+    "tp_review"
+  ]);
+  if (tp_review || tp_transfers < REVIEW_AFTER) return;
+  show("review");
+  $("review-link").onclick = (e) => {
+    e.preventDefault();
+    chrome.storage.sync.set({ tp_review: "clicked" });
+    chrome.tabs.create({ url: REVIEW_URL });
+  };
+  $("review-dismiss").onclick = () => {
+    chrome.storage.sync.set({ tp_review: "dismissed" });
+    $("review").classList.add("hidden");
+  };
+}
+
+// Tab titles carry the site name ("ChatGPT - My chat", "My chat | Perplexity").
+function cleanTitle(raw, label) {
+  const site = "(ChatGPT|Claude|Gemini|Perplexity|Mistral AI|Mistral|Le Chat|Google Gemini)";
+  const t = (raw || "")
+    .replace(new RegExp("^" + site + "\\s*[-–—|:]\\s*", "i"), "")
+    .replace(new RegExp("\\s*[-–—|:]\\s*" + site + "$", "i"), "")
+    .trim();
+  return t && !new RegExp("^" + site + "$", "i").test(t) ? t : `${label} conversation`;
+}
+
+function exportFileName(title, platformId) {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+  const date = new Date().toISOString().slice(0, 10);
+  return `threadport-${platformId}-${date}${slug ? "-" + slug : ""}.md`;
+}
+
+function flash(id, msg) {
+  const el = $(id);
+  const old = el.textContent;
+  el.textContent = msg;
+  setTimeout(() => (el.textContent = old), 1500);
+}
+
+// Markdown export is free and unlimited: it's the door people come in by
+// (they search "export chat"), transfers are what Pro sells.
+function setupExport(extraction, source) {
+  const title = cleanTitle(extraction.title, source.label);
+  const md = () => tpBuildMarkdown(source.label, title, extraction.messages);
+  show("export");
+  $("copy-md").onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(md());
+      flash("copy-md", t("copied"));
+    } catch (_) {
+      flash("copy-md", t("copyFailed"));
+    }
+  };
+  $("download-md").onclick = () => {
+    const blob = new Blob([md()], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = exportFileName(title, source.id);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    flash("download-md", t("saved"));
+  };
+}
+
 function renderQuota(q) {
-  $("quota").textContent = q.pro ? "Pro" : `${q.left}/${FREE_MONTHLY_LIMIT} free`;
+  $("quota").textContent = q.pro ? t("pro") : t("quota", { left: q.left, limit: FREE_MONTHLY_LIMIT });
 }
 
 async function init() {
+  await tpInitLang();
+  tpApplyStatic();
   const quota = await getQuota();
   renderQuota(quota);
 
@@ -112,7 +199,7 @@ async function init() {
   const sourcePlatform = TP_PLATFORMS[platformId];
   if (sourcePlatform.optional && !(await hasPlatformPermission(sourcePlatform))) {
     show("state-enable");
-    $("enable-label").textContent = sourcePlatform.label;
+    $("enable-text").innerHTML = t("enableQ", { ai: sourcePlatform.label });
     $("enable-btn").onclick = async () => {
       const ok = await requestPlatformPermission(sourcePlatform);
       if (!ok) return;
@@ -146,24 +233,23 @@ async function init() {
     show("state-empty");
     $("report-link").href = REPORT_URL;
     if (!resp) {
-      $("state-empty").querySelector("p").textContent =
-        "Reload the AI tab once and try again (the extension was just installed).";
+      $("empty-text").textContent = t("reloadHint");
     }
     return;
   }
 
+  const source = TP_PLATFORMS[resp.platform];
+  setupExport(resp, source);
+
   if (!quota.pro && quota.left <= 0) {
     show("state-limit");
-    $("upgrade").addEventListener("click", () => {
-      extpay.openPaymentPage();
-    });
+    $("upgrade").onclick = () => extpay.openPaymentPage();
     return;
   }
 
-  const source = TP_PLATFORMS[resp.platform];
-  $("source-label").textContent = source.label;
-  $("msg-count").textContent = String(resp.messages.length);
+  $("detected").innerHTML = t("detected", { ai: source.label, n: resp.messages.length });
   show("state-ready");
+  maybeShowReview();
 
   const targetsEl = $("targets");
   targetsEl.innerHTML = "";
@@ -181,6 +267,12 @@ async function init() {
       });
       targetsEl.appendChild(btn);
     });
+  // Same AI, fresh chat: the answer to "this thread got too long / slow".
+  const same = document.createElement("button");
+  same.className = "same";
+  same.textContent = t("sameChat", { ai: source.label });
+  same.addEventListener("click", () => transfer(resp, source));
+  targetsEl.appendChild(same);
 
   async function transfer(extraction, target) {
     const { text, truncated } = tpBuildHandoff(
@@ -190,9 +282,7 @@ async function init() {
     );
     const status = $("status");
     status.classList.remove("hidden");
-    status.textContent = truncated
-      ? `Opening ${target.label}… (long chat: oldest messages trimmed)`
-      : `Opening ${target.label}…`;
+    status.textContent = t(truncated ? "openingTrimmed" : "opening", { ai: target.label });
 
     const res = await chrome.runtime.sendMessage({
       type: "TP_TRANSFER",
@@ -202,11 +292,20 @@ async function init() {
     });
     if (res && res.ok) {
       await bumpQuota();
+      await bumpTransfers();
       window.close();
     } else {
-      status.textContent = "Something went wrong: " + (res && res.error);
+      status.textContent = t("error") + (res && res.error);
     }
   }
 }
+
+document.querySelectorAll(".lang button").forEach((b) => {
+  b.addEventListener("click", async () => {
+    if (b.dataset.lang === tpLang) return;
+    await tpSetLang(b.dataset.lang);
+    init();
+  });
+});
 
 init();
