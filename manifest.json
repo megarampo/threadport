@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "ThreadPort — Move & export AI chats: ChatGPT, Claude, Gemini & more",
+  "name": "__MSG_appName__",
   "version": "0.3.1",
   "default_locale": "en",
-  "description": "Move the FULL conversation between ChatGPT, Claude, Gemini, Perplexity & Mistral in one click. Export to Markdown. No summarizing.",
+  "description": "__MSG_appDesc__",
   "permissions": [
     "storage",
     "scripting",
