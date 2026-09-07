@@ -31,8 +31,10 @@
   ].join(", ");
 
   // Filenames as chat UIs show them on attachment chips.
+  // Any filename Windows/macOS would accept (accents included — "Política.pdf"),
+  // on a single line, with a known document / image / code extension.
   const FILE_RE =
-    /^[\w\-. ()\[\]]{1,120}\.(pdf|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|ya?ml|zip|png|jpe?g|gif|webp|svg|py|js|ts|tsx|jsx|java|c|cpp|h|cs|go|rs|rb|php|html|css|sql|ipynb|log)$/i;
+    /^[^\\/:*?"<>|\n\r]{1,120}\.(pdf|docx?|xlsx?|pptx?|csv|tsv|txt|md|rtf|odt|json|xml|ya?ml|zip|png|jpe?g|gif|webp|svg|heic|py|js|ts|tsx|jsx|java|c|cpp|h|cs|go|rs|rb|php|html|css|sql|ipynb|log)$/i;
 
   // User turns render attachments as chips (filename + type/size label) next
   // to the text. Remove the whole chip so only the note we add remains.
