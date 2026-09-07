@@ -134,6 +134,8 @@ function cleanTitle(raw, label) {
 
 function exportFileName(title, platformId) {
   const slug = title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // drop accents: "rápidas" → "rapidas"
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
