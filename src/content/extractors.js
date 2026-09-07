@@ -38,15 +38,22 @@
 
   // User turns render attachments as chips (filename + type/size label) next
   // to the text. Remove the whole chip so only the note we add remains.
+  const CHIP_EXTRA_RE =
+    /^(?:\s*(?:pdf|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|zip|png|jpe?g|gif|webp|svg|file|archivo|document|documento|image|imagen|spreadsheet|presentation|presentaci\u00f3n|hoja de c\u00e1lculo|\d+(?:[.,]\d+)?\s?(?:b|kb|mb|gb|bytes)))*\s*$/i;
   const stripFileChips = (root) => {
     root.querySelectorAll("span, div, a, p").forEach((el) => {
       if (!root.contains(el)) return; // already removed as part of an earlier chip
       const t = (el.textContent || "").trim();
       if (t.length > 130 || !FILE_RE.test(t)) return;
+      // Climb only while everything around the filename is chip chrome
+      // (type label, size) — never the user's own text, however short.
       let node = el;
       while (node.parentElement && node.parentElement !== root) {
         const pt = (node.parentElement.textContent || "").trim();
-        if (pt.length > t.length + 24) break;
+        const at = pt.indexOf(t);
+        if (at < 0) break;
+        const extra = (pt.slice(0, at) + " " + pt.slice(at + t.length)).trim();
+        if (extra && !CHIP_EXTRA_RE.test(extra)) break;
         node = node.parentElement;
       }
       if (node !== root) node.remove();
