@@ -103,6 +103,14 @@
       let lang = "";
       const m = /language-([\w+#-]+)/.exec((code && code.className) || "");
       if (m) lang = m[1].toLowerCase();
+      if (!lang) {
+        // No language class (ChatGPT sometimes skips it): use the visible
+        // header label inside <pre>, ignoring the code itself and its wrappers.
+        const label = Array.from(pre.querySelectorAll("div, span")).find(
+          (e) => !(code && (e.contains(code) || code.contains(e))) && isLangLabel(e.textContent)
+        );
+        if (label) lang = label.textContent.trim().toLowerCase();
+      }
       const lines = ((code || pre).textContent || "").replace(/\r/g, "").split("\n");
       while (lines.length && !lines[0].trim()) lines.shift();
       while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
