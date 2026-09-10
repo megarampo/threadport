@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo pasar una conversación de ChatGPT a Claude (3 formas, 2026)</title>
+<meta name="description" content="Cómo continuar en Claude una conversación que empezaste en ChatGPT sin perder el contexto: copiar y pegar con un prompt de traspaso, la importación de memoria de Claude, o una extensión que lo hace en un clic. Comparación honesta.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/pasar-conversacion-chatgpt-a-claude.html">
+<link rel="alternate" hreflang="es" href="https://megarampo.github.io/threadport/pasar-conversacion-chatgpt-a-claude.html">
+<link rel="alternate" hreflang="en" href="https://megarampo.github.io/threadport/transfer-chatgpt-to-claude.html">
+<meta property="og:title" content="Cómo pasar una conversación de ChatGPT a Claude (3 formas, 2026)">
+<meta property="og:description" content="Prompt de traspaso manual, importación de memoria de Claude o un clic: comparación honesta de todas las formas de seguir en Claude un chat de ChatGPT.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/pasar-conversacion-chatgpt-a-claude.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guías</span> · <a href="transfer-chatgpt-to-claude.html" hreflang="en">English</a></nav>
+
+<h1>Cómo pasar una conversación de ChatGPT a Claude</h1>
+<p class="updated">Actualizado en septiembre de 2026 · 6 min de lectura</p>
+
+<p>Llevas un buen rato hablando con ChatGPT y quieres seguir en Claude: te quedaste sin mensajes, quieres una segunda opinión o directamente te cambias de asistente. El problema es que la conversación está atrapada en una pestaña y Claude no sabe nada de ella.</p>
+
+<p>Hay tres formas reales de hacerlo. Esta guía las explica todas con honestidad, incluida la situación en la que cada una es la opción equivocada.</p>
+
+<h2>Método 1: copiar y pegar con un prompt de traspaso (gratis, manual)</h2>
+
+<p>El método obvio funciona mucho mejor si haces algo poco obvio: no pegues la conversación tal cual. Claude responde bastante mejor si le presentas el texto como una continuación. Este prompt funciona:</p>
+
+<pre>Estás continuando una conversación que empezó en ChatGPT. Abajo tienes
+la transcripción completa. No me la resumas: retoma exactamente donde
+se quedó, manteniendo el mismo contexto, las decisiones y el tono.
+
+=== TRANSCRIPT START ===
+[pega aquí la conversación]
+=== TRANSCRIPT END ===</pre>
+
+<p>Consejos que ahorran disgustos:</p>
+<ul>
+  <li><strong>Etiqueta quién habla.</strong> Pon <code>[User]</code> y <code>[Assistant]</code> delante de cada mensaje al pegar, o Claude perderá el hilo de quién dijo qué.</li>
+  <li><strong>Vigila la longitud.</strong> Un chat muy largo puede superar lo que se puede pegar con comodidad. Conserva el primer mensaje (suele definir la tarea) y los últimos; el medio se puede recortar.</li>
+  <li><strong>Cuenta con limpiar.</strong> Al copiar desde la interfaz de ChatGPT se cuelan textos de botones, citas y widgets que tendrás que borrar a mano.</li>
+</ul>
+
+<p><strong>Va bien para:</strong> traspasos ocasionales y conversaciones cortas.<br>
+<strong>Va mal para:</strong> hilos largos o hacerlo varias veces al día. La limpieza cansa rápido.</p>
+
+<h2>Método 2: la importación de memoria de Claude (gratis, una sola vez)</h2>
+
+<p>En marzo de 2026 Anthropic añadió una <a href="https://claude.com/import-memory" rel="nofollow">herramienta de importación</a> que lleva a Claude tus <em>memorias y preferencias</em> de ChatGPT: tu estilo de escritura, instrucciones fijas, contexto de proyectos, datos sobre ti. Ejecutas un prompt preparado en ChatGPT, copias el resultado y lo pegas en los ajustes de memoria de Claude.</p>
+
+<p>Es útil de verdad, y a menudo se malinterpreta. Lo que <strong>no</strong> hace es mover conversaciones. Migra quién eres, no de qué estabas hablando. Tus hilos de ChatGPT se quedan en ChatGPT, y la conversación de esta mañana no se puede continuar por esta vía.</p>
+
+<p><strong>Va bien para:</strong> pasarte a Claude de forma permanente llevándote el contexto acumulado. Hazlo una vez, uses el método que uses después.<br>
+<strong>Va mal para:</strong> mover una conversación concreta. No está pensada para eso.</p>
+
+<h2>Método 3: traspaso en un clic con una extensión del navegador</h2>
+
+<p class="disclosure">Aviso claro: esta herramienta es nuestra. Los dos métodos anteriores son alternativas reales; construimos esto porque los usábamos a diario y nos cansamos.</p>
+
+<p><a href="./">ThreadPort</a> es una extensión para Chrome y Edge que hace todo el flujo del método 1 en un clic: extrae la conversación que tienes abierta, quita la basura de la interfaz (widgets, botones, citas), etiqueta quién habla, la envuelve en un prompt de traspaso, abre Claude y lo pega todo listo para enviar. Funciona en las dos direcciones, y también con Gemini, Perplexity y Mistral. Si lo que quieres es una copia, también exporta la conversación a un archivo Markdown.</p>
+
+<ul>
+  <li><strong>Privada por diseño:</strong> sin servidores ni cuenta. La conversación pasa de una pestaña a otra y nunca sale de tu equipo.</li>
+  <li><strong>Funciona en España y en toda la UE:</strong> no hay nada bloqueado por región.</li>
+  <li><strong>Recorte inteligente:</strong> en chats muy largos conserva la definición de la tarea y los mensajes recientes, con una marca donde se omitieron mensajes.</li>
+  <li><strong>Interfaz en español</strong> y en inglés.</li>
+  <li><strong>Gratis</strong> para 10 traspasos al mes; la exportación a Markdown no tiene límite.</li>
+</ul>
+
+<h2>¿Qué método te conviene?</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th></th><th>Copiar y pegar</th><th>Importación de memoria</th><th>ThreadPort</th></tr>
+  <tr><td>Mueve la conversación en curso</td><td>Sí, a mano</td><td>No</td><td>Sí, en un clic</td></tr>
+  <tr><td>Mueve tus preferencias y memoria</td><td>No</td><td>Sí</td><td>No</td></tr>
+  <tr><td>Limpia la basura de la interfaz</td><td>A mano</td><td>—</td><td>Automático</td></tr>
+  <tr><td>Funciona en las dos direcciones</td><td>Sí</td><td>No (solo hacia Claude)</td><td>Sí, las 20 rutas</td></tr>
+  <tr><td>Disponible en la UE</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+  <tr><td>Precio</td><td>Gratis</td><td>Gratis</td><td>Gratis (10 al mes)</td></tr>
+</table>
+</div>
+
+<p class="note">¿Te pasas a Claude para siempre? Usa el método 2 una vez para tu memoria, y el 1 o el 3 para las conversaciones que de verdad quieras continuar. Se complementan, no compiten.</p>
+
+<h2>Preguntas frecuentes</h2>
+
+<h3>¿Se conserva el formato al pasar la conversación?</h3>
+<p>En general sí. Los bloques de código, las listas y los párrafos llegan como texto con su estructura. Lo que se pierde con cualquier método: imágenes, archivos adjuntos y resultados de plugins, porque no son texto y no se pueden pegar. ThreadPort deja una nota en su lugar, del tipo <code>[user attached: informe.pdf]</code>, para que Claude sepa que faltaba algo.</p>
+
+<h3>¿Claude retoma de verdad donde lo dejó ChatGPT?</h3>
+<p>Sí, sorprendentemente bien, siempre que la transcripción vaya presentada como continuación (para eso está el prompt de traspaso). Claude lee todo el contexto y responde a la última pregunta abierta en vez de resumir lo que leyó.</p>
+
+<h3>¿Es seguro pegar mis conversaciones en otra IA?</h3>
+<p>Trata una conversación traspasada como cualquier otro prompt: a partir de ahí se rige por la política de privacidad de la plataforma que la recibe. Si el hilo contiene datos sensibles, eso vale para cualquier método de traspaso, y para la conversación original también.</p>
+
+<h3>¿Y para pasar conversaciones de ChatGPT a Gemini?</h3>
+<p>Mismas tres opciones con una diferencia: la importación nativa de Gemini trabaja con un ZIP de todo tu historial exportado, una migración masiva y de una sola vía que llegó a Europa a lo largo de 2026. Tenemos una guía aparte, por ahora en inglés: <a href="transfer-chatgpt-to-gemini.html">How to transfer a ChatGPT conversation to Gemini</a>.</p>
+
+<div class="cta-box">
+  <p><strong>Olvídate de copiar y pegar.</strong> Mueve la conversación que tienes abierta ahora mismo, con todo el contexto, en un clic.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Añadir a Chrome (gratis)</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Añadir a Edge</a>
+</div>
+
+<footer>
+  <a href="./">ThreadPort</a> · <a href="privacy.html">Política de privacidad</a> · <a href="https://github.com/megarampo/threadport/issues">Soporte</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "es",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Se conserva el formato al pasar una conversación de ChatGPT a Claude?",
+      "acceptedAnswer": { "@type": "Answer", "text": "En general sí. Los bloques de código, las listas y los párrafos llegan como texto con su estructura. Las imágenes, los archivos adjuntos y los resultados de plugins se pierden con cualquier método, porque no son texto." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Claude retoma donde lo dejó ChatGPT?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí, si la transcripción va presentada como continuación mediante un prompt de traspaso. Claude lee todo el contexto y responde a la última pregunta abierta en vez de resumir." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿La importación nativa de Claude mueve mis conversaciones?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. La importación de memoria de Claude (marzo de 2026) migra tus memorias y preferencias, como el estilo de escritura, las instrucciones y el contexto de proyectos, pero no los hilos de conversación. Para continuar una conversación concreta hay que traspasarla a mano o con una extensión del navegador." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Se pueden pasar conversaciones de ChatGPT a Claude desde España o la UE?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí. Copiar y pegar, la importación de memoria de Claude y la extensión ThreadPort funcionan en toda la UE. La importación ZIP de Gemini, que salió primero en Estados Unidos, también fue llegando a Europa durante 2026." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
