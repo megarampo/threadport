@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Export a Mistral (Vibe / Le Chat) Conversation (2026)</title>
+<meta name="description" content="Mistral Vibe (formerly Le Chat) has no export button. Here are every real way to get a conversation out: copy, print to PDF, a data request, third-party exporters, or a one-click Markdown export. Honest trade-offs for each.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/export-mistral-conversation.html">
+<meta property="og:title" content="How to Export a Mistral (Vibe / Le Chat) Conversation (2026)">
+<meta property="og:description" content="No export button in Mistral Vibe? Every real way to save or move a Le Chat conversation, with the trade-offs stated plainly.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/export-mistral-conversation.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
+
+<h1>How to Export a Mistral (Vibe / Le Chat) Conversation</h1>
+<p class="updated">Updated September 2026 · 5 min read</p>
+
+<p>Mistral's assistant was renamed from Le Chat to <strong>Vibe</strong> in August 2026. Same address (chat.mistral.ai), same account, same conversations, and the same gap: there is still <strong>no "export this conversation" button</strong>. Not per chat, not in bulk. Your threads live on Mistral's servers and the interface is the only official way to see them.</p>
+
+<p>So here is every real way to get a conversation out, from the crude to the clean, with the trade-offs stated plainly. Which one you want depends on <em>why</em> you're exporting.</p>
+
+<h2>1. Copy one answer at a time (quick, for a snippet)</h2>
+
+<p>Hover over any of Mistral's replies and use the copy button under it. You get that single answer as clean Markdown: headings, lists and code blocks survive. Your own prompts don't come along, so this is for grabbing one good response, not for saving a conversation.</p>
+
+<p><strong>Good for:</strong> one answer you want to paste somewhere.<br>
+<strong>Bad for:</strong> anything longer than that.</p>
+
+<h2>2. Select all and paste (the whole thread, with junk)</h2>
+
+<p>Click at the top of the conversation, drag to the bottom (or use Ctrl+A on the chat area), copy, and paste into a text editor. It works, and it's the method most people actually use. Expect to clean up: timestamps under your messages, "Copy" and "Regenerate" labels, source chips, and no clear marker of who said what. On a long thread, budget five to ten minutes of tidying.</p>
+
+<p><strong>Good for:</strong> a one-off backup of a medium-length chat.<br>
+<strong>Bad for:</strong> long threads, or doing it more than once a week.</p>
+
+<h2>3. Print to PDF (frozen snapshot)</h2>
+
+<p>Ctrl+P (Cmd+P on Mac) and choose "Save as PDF". Vibe's page prints reasonably well: you get the visible conversation with formatting, in a file you can archive or email. Two catches. Only what has loaded on screen is printed, so scroll to the top of a long conversation first. And a PDF is a picture of the text, not the text: you can't feed it to another AI as context without extracting it again.</p>
+
+<p><strong>Good for:</strong> archiving, sharing with someone who won't edit it.<br>
+<strong>Bad for:</strong> reusing the content anywhere.</p>
+
+<h2>4. Ask Mistral for your data (complete, slow, not a working file)</h2>
+
+<p>Mistral is a French company under GDPR, so you have a right of access to your personal data, which includes conversation history. Their privacy policy lists a contact for data requests. Expect a formal reply within a month and a data dump that is complete but not designed for reading or reuse.</p>
+
+<p><strong>Good for:</strong> leaving the platform and wanting a full legal copy.<br>
+<strong>Bad for:</strong> anything you need today.</p>
+
+<h2>5. Third-party exporters (convenient, read the permissions)</h2>
+
+<p>A few browser extensions and tools add an export button to Mistral, or capture every conversation as you go and keep it in a local library. They range from "saves Markdown files to your disk" to "syncs to our cloud", and that difference matters more than the feature list: check whether the tool sends your conversations to a server before you install it. The ones that keep everything local are fine for regular backups.</p>
+
+<h2>6. Export it as Markdown, or move it to another AI, in one click</h2>
+
+<p class="disclosure">Full disclosure: this is our tool. Everything above is a real alternative; we built this because we used method 2 daily and got tired of it.</p>
+
+<p><a href="./">ThreadPort</a> is a Chrome and Edge extension that reads the conversation you have open in Vibe, strips the interface junk, labels who said what, and gives you two buttons. <strong>Download .md</strong> saves the whole thread as a clean Markdown file (or copies it to the clipboard). <strong>Move to another AI</strong> opens ChatGPT, Claude, Gemini or Perplexity with the full conversation pasted in and framed so it simply continues, which is what "export" usually means when you're mid-task: not archiving, but carrying on somewhere else. It also works in the other direction, into Mistral.</p>
+
+<ul>
+  <li><strong>Private by design:</strong> no servers, no account. The conversation goes from your tab to your disk or to another tab, and never leaves your machine.</li>
+  <li><strong>Markdown export is free with no limit.</strong> Transfers between AIs are free for 10 a month.</li>
+  <li><strong>Attachments are noted</strong> in the transcript (<code>[user attached: report.pdf]</code>) so nothing goes missing silently. Code blocks come out as real fenced code.</li>
+  <li>Mistral support is optional: the extension asks for permission on chat.mistral.ai the first time you use it there, and never touches the site before that.</li>
+</ul>
+
+<h2>Which one do you actually need?</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>You want to…</th><th>Use</th></tr>
+  <tr><td>Grab one good answer</td><td>1. Copy button</td></tr>
+  <tr><td>Back up a chat once, don't mind cleaning</td><td>2. Select all and paste</td></tr>
+  <tr><td>Archive or share a read-only copy</td><td>3. Print to PDF</td></tr>
+  <tr><td>Leave Mistral with a complete legal copy</td><td>4. Data request</td></tr>
+  <tr><td>Save chats regularly as files</td><td>5 or 6, whichever keeps data local</td></tr>
+  <tr><td>Continue the conversation in another AI</td><td>6. ThreadPort</td></tr>
+</table>
+</div>
+
+<p class="note">Vibe's usage limits on the free plan are generous, but when you do hit them mid-task, "export" is rarely what you want. You want to keep going. Moving the thread to another AI with its full context is the fastest way to do that.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Does Mistral Vibe have a built-in export or download option?</h3>
+<p>No. As of September 2026 there is no per-conversation export and no bulk download in the Vibe interface, on web or mobile. The rename from Le Chat to Vibe didn't change that.</p>
+
+<h3>Can I export a Mistral conversation as Markdown?</h3>
+<p>Yes, two ways: copy answers one by one with the copy button (each comes out as Markdown, without your prompts), or use a browser extension such as ThreadPort that exports the whole thread, both sides labeled, as a .md file.</p>
+
+<h3>Did my Le Chat conversations survive the switch to Vibe?</h3>
+<p>Yes. Mistral kept the same address, chat.mistral.ai, and the same account, so existing conversations are still there under the new name.</p>
+
+<h3>What's the fastest way to continue a Mistral chat in ChatGPT or Claude?</h3>
+<p>Open the conversation in Vibe, click ThreadPort, pick the destination. A new tab opens with the full transcript pasted and framed as a continuation, ready to send. Manual alternative: select all, paste, clean up, and prepend a short "you are continuing this conversation" note.</p>
+
+<div class="cta-box">
+  <p><strong>Get the conversation out in one click.</strong> Markdown file, or straight into another AI, all on your machine.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome — Free</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
+</div>
+
+<footer>
+  <a href="./">ThreadPort</a> · <a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/megarampo/threadport/issues">Support</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Mistral Vibe (Le Chat) have a built-in export or download option?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. As of September 2026 there is no per-conversation export and no bulk download in the Vibe interface. The rename from Le Chat to Vibe did not change that. Options are copying answers one by one, select-all and paste, print to PDF, a GDPR data request, or a browser extension." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I export a Mistral conversation as Markdown?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The copy button under each answer gives Markdown for that single reply, without your prompts. A browser extension such as ThreadPort exports the whole conversation, both sides labeled, as a .md file, locally in the browser." }
+    },
+    {
+      "@type": "Question",
+      "name": "Did Le Chat conversations survive the switch to Vibe?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Mistral kept the same address, chat.mistral.ai, and the same account, so existing conversations are still available under the new name." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the fastest way to continue a Mistral chat in ChatGPT or Claude?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Open the conversation in Vibe, click ThreadPort and pick the destination AI; a new tab opens with the full transcript pasted and framed as a continuation. The manual alternative is select all, paste, clean up and prepend a short continuation note." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
