@@ -185,7 +185,12 @@ function setupExport(extraction, source) {
 }
 
 function renderQuota(q) {
-  $("quota").textContent = q.pro ? t("pro") : t("quota", { left: q.left, limit: freeLimit() });
+  const chip = $("quota");
+  chip.textContent = q.pro ? t("pro") : t("quota", { left: q.left, limit: freeLimit() });
+  // Free users can always reach the Pro page from the counter chip.
+  chip.classList.toggle("clickable", !q.pro);
+  if (!q.pro) chip.title = t("quotaGoPro");
+  chip.onclick = q.pro ? null : () => extpay.openPaymentPage();
 }
 
 async function init() {

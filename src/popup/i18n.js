@@ -7,6 +7,7 @@ const TP_I18N = {
   en: {
     langTitle: "Language / Idioma",
     quotaTitle: "Free transfers left this month",
+    quotaGoPro: "Free transfers left this month. Click to go unlimited (€19 once).",
     pro: "Pro",
     quota: "{left}/{limit} free",
     unsupported:
@@ -53,6 +54,7 @@ const TP_I18N = {
   es: {
     langTitle: "Idioma / Language",
     quotaTitle: "Transferencias gratuitas que te quedan este mes",
+    quotaGoPro: "Transferencias gratis que te quedan este mes. Clic para pasar a ilimitadas (€19, pago único).",
     pro: "Pro",
     quota: "{left}/{limit} gratis",
     unsupported:
