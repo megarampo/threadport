@@ -55,7 +55,8 @@ header h1 { font-size: 14px; font-weight: 650; flex: 1; }
 }
 
 main { padding: 14px; }
-.state.hidden, .status.hidden { display: none; }
+.state.hidden, .status.hidden, .pro-hint.hidden { display: none; }
+.pro-hint { margin-top: 10px; }
 .dim { color: var(--dim); font-size: 12px; margin-top: 6px; }
 .detected { font-size: 13px; }
 .send-to { margin-top: 10px; }

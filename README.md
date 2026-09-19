@@ -43,4 +43,4 @@ Los tres sitios cambian su DOM sin aviso. Cuando la extracción falle:
 
 ## Pricing decidido
 
-Free 10/mes · Pro €7,99/mes · Anual €47 · Lifetime lanzamiento €69-79.
+Free 5/mes desde oct-2026 (antes 10) · Pro €19 pago único · €2,99/mes. Export a Markdown gratis e ilimitado. (Precios anteriores hasta 19-sep-2026: €7,99/mes, €47/año, €69 lifetime; 0 ventas.)

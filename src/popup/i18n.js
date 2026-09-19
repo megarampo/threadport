@@ -39,7 +39,8 @@ const TP_I18N = {
     copyFailed: "Copy failed",
     saved: "Saved ✓",
     limitTitle: "<b>Free limit reached for this month.</b>",
-    limitDim: "Upgrade to Pro for unlimited transfers.",
+    limitDim: "Unlimited transfers with Pro: €19 once, or €2.99 a month. Markdown export stays free.",
+    proHint: '{left} free transfers left this month. <a id="pro-link" href="#">Go unlimited for €19, one time</a>.',
     upgrade: "Upgrade to Pro",
     review:
       'Is ThreadPort useful? <a id="review-link" href="#">Leave a quick review</a> ' +
@@ -84,7 +85,8 @@ const TP_I18N = {
     copyFailed: "No se pudo copiar",
     saved: "Guardado ✓",
     limitTitle: "<b>Límite gratuito del mes alcanzado.</b>",
-    limitDim: "Pasa a Pro para transferencias ilimitadas.",
+    limitDim: "Transferencias ilimitadas con Pro: €19 una sola vez, o €2,99 al mes. Exportar a Markdown sigue gratis.",
+    proHint: 'Te quedan {left} transferencias gratis este mes. <a id="pro-link" href="#">Ilimitadas por €19, pago único</a>.',
     upgrade: "Pasar a Pro",
     review:
       '¿Te resulta útil ThreadPort? <a id="review-link" href="#">Deja una reseña rápida</a>: ' +

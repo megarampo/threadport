@@ -2,7 +2,12 @@
 // quota, and kick off transfers via the background worker.
 "use strict";
 
-const FREE_MONTHLY_LIMIT = 10;
+// Free tier: 10 transfers a month through September 2026, 5 from October on
+// (nobody gets cut off mid-month by the update). Markdown export stays free.
+const FREE_LIMIT_CHANGE_MONTH = "2026-10";
+const freeLimit = () => (monthKey() >= FREE_LIMIT_CHANGE_MONTH ? 5 : 10);
+// Show the Pro hint once the user is this close to the limit.
+const PRO_HINT_AT = 3;
 const REPORT_URL = "https://github.com/megarampo/threadport/issues";
 // One-time review ask, shown after this many successful transfers.
 const REVIEW_AFTER = 3;
@@ -48,7 +53,7 @@ async function getQuota() {
   if (await isPaid()) return { pro: true, used: 0, left: Infinity };
   const { tp_quota } = await chrome.storage.sync.get("tp_quota");
   const q = tp_quota && tp_quota.month === monthKey() ? tp_quota : { month: monthKey(), used: 0 };
-  return { pro: false, used: q.used, left: Math.max(0, FREE_MONTHLY_LIMIT - q.used) };
+  return { pro: false, used: q.used, left: Math.max(0, freeLimit() - q.used) };
 }
 
 async function bumpQuota() {
@@ -180,7 +185,7 @@ function setupExport(extraction, source) {
 }
 
 function renderQuota(q) {
-  $("quota").textContent = q.pro ? t("pro") : t("quota", { left: q.left, limit: FREE_MONTHLY_LIMIT });
+  $("quota").textContent = q.pro ? t("pro") : t("quota", { left: q.left, limit: freeLimit() });
 }
 
 async function init() {
@@ -252,6 +257,17 @@ async function init() {
   $("detected").innerHTML = t("detected", { ai: source.label, n: resp.messages.length });
   show("state-ready");
   maybeShowReview();
+  const hint = $("pro-hint");
+  if (!quota.pro && quota.left <= PRO_HINT_AT) {
+    hint.innerHTML = t("proHint", { left: quota.left });
+    hint.classList.remove("hidden");
+    $("pro-link").onclick = (e) => {
+      e.preventDefault();
+      extpay.openPaymentPage();
+    };
+  } else {
+    hint.classList.add("hidden");
+  }
 
   const targetsEl = $("targets");
   targetsEl.innerHTML = "";
