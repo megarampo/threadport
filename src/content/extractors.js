@@ -66,6 +66,7 @@
     clone.querySelectorAll(NOISE_SELECTORS).forEach((n) => n.remove());
     if (opts && opts.user) stripFileChips(clone);
     fenceCodeBlocks(clone);
+    markLists(clone);
     // innerText only computes line breaks for rendered nodes, so the clone
     // must briefly live in the DOM (off-screen).
     clone.style.position = "absolute";
@@ -94,6 +95,22 @@
   );
   const isLangLabel = (s) => LANG_LABELS.has((s || "").trim().toLowerCase());
 
+  // innerText drops list markers, so "1. 2. 3." steps arrive as loose lines.
+  // Put the markers back as text before reading the clone.
+  const markLists = (root) => {
+    root.querySelectorAll("ol").forEach((ol) => {
+      let n = parseInt(ol.getAttribute("start") || "1", 10) || 1;
+      Array.from(ol.children).forEach((li) => {
+        if (li.tagName !== "LI") return;
+        li.insertBefore(document.createTextNode(n + ". "), li.firstChild);
+        n++;
+      });
+    });
+    root.querySelectorAll("ul > li").forEach((li) => {
+      li.insertBefore(document.createTextNode("- "), li.firstChild);
+    });
+  };
+
   // Rewrite every <pre> as a fenced Markdown block so the destination AI sees
   // real code (and the Markdown export is valid), dropping the label / copy
   // chrome around it. Runs on the detached clone, before innerText.
@@ -118,14 +135,19 @@
         lang = lang || lines[0].trim().toLowerCase();
         lines.shift();
       }
-      const parent = pre.parentElement;
-      if (parent) {
+      // The label can sit next to <pre> or a couple of wrappers up (Claude
+      // puts it two levels above). Only elements whose whole text is a
+      // language name are removed, so prose is never touched.
+      let branch = pre;
+      for (let up = 0; up < 3 && branch.parentElement && branch.parentElement !== root; up++) {
+        const parent = branch.parentElement;
         Array.from(parent.children).forEach((sib) => {
-          if (sib !== pre && isLangLabel(sib.textContent)) {
+          if (sib !== branch && isLangLabel(sib.textContent)) {
             lang = lang || sib.textContent.trim().toLowerCase();
             sib.remove();
           }
         });
+        branch = parent;
       }
       const fenced = document.createElement("div");
       fenced.style.whiteSpace = "pre-wrap";
