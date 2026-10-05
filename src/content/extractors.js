@@ -199,15 +199,38 @@
 
   // ChatGPT turn → {role, text, key}. Shared by the quick extractor and the
   // virtualization sweep so both see the same text and dedupe on the same key.
+  // Two ChatGPT layouts coexist (staged rollout):
+  //  - classic: <div data-message-author-role data-message-id> with .markdown
+  //  - October 2026: <div data-chatgpt-search-unit-key="…:user|assistant"
+  //    data-chatgpt-search-message-ids="id …">, user text inside
+  //    [data-user-message-bubble], assistant text inside
+  //    [data-chatgpt-selection-message-id]. The "ChatGPT said:" label is an
+  //    sr-only <h4>, already removed by NOISE.
+  const CHATGPT_TURN_SELECTOR =
+    "[data-message-author-role], [data-chatgpt-search-unit-key]";
+  const chatgptTurnNodes = () => document.querySelectorAll(CHATGPT_TURN_SELECTOR);
+
   const readChatGPTNode = (n) => {
-    const role =
-      n.getAttribute("data-message-author-role") === "user" ? "user" : "assistant";
-    // Prefer the rendered markdown container when present (skips buttons etc).
-    const md = n.querySelector(".markdown");
-    let text = clean(md || n, { user: role === "user" });
+    let role, body, id;
+    if (n.hasAttribute("data-message-author-role")) {
+      role = n.getAttribute("data-message-author-role") === "user" ? "user" : "assistant";
+      // Prefer the rendered markdown container when present (skips buttons etc).
+      body = n.querySelector(".markdown") || n;
+      id = n.getAttribute("data-message-id");
+    } else {
+      const bubble = n.querySelector("[data-user-message-bubble]");
+      const unitKey = n.getAttribute("data-chatgpt-search-unit-key") || "";
+      role = bubble || /:user$/.test(unitKey) ? "user" : "assistant";
+      body =
+        role === "user"
+          ? (bubble && bubble.querySelector(".whitespace-pre-wrap")) || bubble || n
+          : n.querySelector("[data-chatgpt-selection-message-id]") || n;
+      id = (n.getAttribute("data-chatgpt-search-message-ids") || "").split(/[\s,]+/)[0] || null;
+    }
+    let text = clean(body, { user: role === "user" });
     if (role === "user") text = withAttachments(n, text);
     if (!text) return null;
-    const key = n.getAttribute("data-message-id") || role + "|" + text.slice(0, 200);
+    const key = id || role + "|" + text.slice(0, 200);
     return { role, text, key };
   };
 
@@ -235,7 +258,7 @@
   // ---------- ChatGPT ----------
   // data-message-author-role has been stable across redesigns for years.
   function extractChatGPT() {
-    const nodes = document.querySelectorAll("[data-message-author-role]");
+    const nodes = chatgptTurnNodes();
     const messages = [];
     nodes.forEach((n) => {
       const m = readChatGPTNode(n);
@@ -299,7 +322,7 @@
   // messages by data-message-id as each section renders, then restore scroll.
   async function sweepChatGPT() {
     const quick = extractChatGPT();
-    const probe = document.querySelector("[data-message-author-role]");
+    const probe = document.querySelector(CHATGPT_TURN_SELECTOR);
     if (!probe) return quick;
 
     let sc = probe.parentElement;
@@ -321,7 +344,7 @@
     const seen = new Map();
     const harvest = () => {
       let added = 0;
-      document.querySelectorAll("[data-message-author-role]").forEach((n) => {
+      chatgptTurnNodes().forEach((n) => {
         const m = readChatGPTNode(n);
         if (!m) return;
         if (!seen.has(m.key)) {
@@ -336,7 +359,7 @@
     // be slow to re-render after the sweep. Snapshot that starting window
     // first; anything the sweep misses gets stitched back at the end.
     const tailSnapshot = new Map();
-    document.querySelectorAll("[data-message-author-role]").forEach((n) => {
+    chatgptTurnNodes().forEach((n) => {
       const m = readChatGPTNode(n);
       if (m) tailSnapshot.set(m.key, { role: m.role, text: m.text });
     });
@@ -450,8 +473,78 @@
 
   // Async variant: on ChatGPT it sweeps the virtualized list to capture the
   // full thread; elsewhere it's the plain synchronous extraction.
+  // ---------- ChatGPT via its own conversation endpoint ----------
+  // Since October 2026 chatgpt.com renders the thread in a column-reverse,
+  // windowed list that only loads older turns on trusted scroll events, so a
+  // DOM sweep can no longer reach the whole conversation. The page itself
+  // fetches /backend-api/conversation/<id>; we read the same endpoint, from
+  // the user's own tab, with the session token the page already holds. The
+  // request goes only to chatgpt.com (no third party) and nothing is stored.
+  async function fetchChatGPTConversation() {
+    const m = location.pathname.match(/\/c\/([0-9a-f-]{36})/i);
+    if (!m) return null;
+    const sess = await fetch("/api/auth/session", { credentials: "include" }).then((r) =>
+      r.ok ? r.json() : null
+    );
+    const token = sess && sess.accessToken;
+    if (!token) return null;
+    const res = await fetch("/backend-api/conversation/" + m[1], {
+      credentials: "include",
+      headers: { Authorization: "Bearer " + token }
+    });
+    if (!res.ok) return null;
+    const conv = await res.json();
+    const mapping = conv && conv.mapping;
+    if (!mapping || !conv.current_node) return null;
+
+    // Walk the active branch from the current node back to the root, so
+    // regenerated or edited turns only contribute the version on screen.
+    const chain = [];
+    let cursor = mapping[conv.current_node];
+    let guard = 0;
+    while (cursor && guard++ < 5000) {
+      chain.push(cursor);
+      cursor = cursor.parent ? mapping[cursor.parent] : null;
+    }
+    chain.reverse();
+
+    const messages = [];
+    chain.forEach((node) => {
+      const msg = node.message;
+      if (!msg || !msg.author) return;
+      const role = msg.author.role;
+      if (role !== "user" && role !== "assistant") return;
+      const c = msg.content || {};
+      if (c.content_type !== "text" && c.content_type !== "multimodal_text") return;
+      const notes = [];
+      const text = (c.parts || [])
+        .map((part) => {
+          if (typeof part === "string") return part;
+          if (part && /image/.test(part.content_type || "")) {
+            notes.push("[user attached an image]");
+          }
+          return "";
+        })
+        .join("")
+        .trim();
+      const files = (msg.metadata && msg.metadata.attachments) || [];
+      files.forEach((f) => {
+        if (f && f.name) notes.push("[user attached: " + f.name + "]");
+      });
+      const body = (role === "user" ? notes.join("\n") : "") + (text ? (notes.length && role === "user" ? "\n" : "") + text : "");
+      if (body.trim()) messages.push({ role, text: body.trim() });
+    });
+    return messages.length ? messages : null;
+  }
+
   globalThis.tpExtractAsync = async function (platformId) {
     if (platformId === "chatgpt") {
+      try {
+        const viaApi = await fetchChatGPTConversation();
+        if (viaApi) return viaApi;
+      } catch (e) {
+        console.warn("[ThreadPort] conversation endpoint failed, sweeping DOM:", e);
+      }
       try {
         return await sweepChatGPT();
       } catch (e) {
