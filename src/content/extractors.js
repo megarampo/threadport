@@ -473,6 +473,104 @@
 
   // Async variant: on ChatGPT it sweeps the virtualized list to capture the
   // full thread; elsewhere it's the plain synchronous extraction.
+  // ---------- ChatGPT "Intelligent UI" answers (GPT-6, October 2026) ----------
+  // Widget answers come out of the conversation endpoint as a template, not as
+  // text: script blocks ({@body …}), loops ({#each}), interpolations ({expr})
+  // and layout tags (<box>, <table-cell>, <slider>…). The numbers the user sees
+  // only exist once the page has rendered it, so we prefer the rendered turn
+  // when it is on screen and otherwise reduce the template to readable text.
+  const WIDGET_RE = /\{@body\b|\{#each\b|<(?:box|table-cell|segmented-control|grid-item)\b/;
+
+  // Replace every balanced "{…}" block, honouring nested braces and quoted
+  // strings: template blocks ({@body …}, {#each …}, {/each}, {:else}) vanish,
+  // interpolations ({p.name}) become an ellipsis.
+  const foldBraces = (text) => {
+    let out = "";
+    let i = 0;
+    while (i < text.length) {
+      const at = text.indexOf("{", i);
+      if (at < 0) {
+        out += text.slice(i);
+        break;
+      }
+      out += text.slice(i, at);
+      let depth = 0;
+      let quote = null;
+      let j = at;
+      for (; j < text.length; j++) {
+        const ch = text[j];
+        if (quote) {
+          if (ch === "\\") j++;
+          else if (ch === quote) quote = null;
+          continue;
+        }
+        if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+        else if (ch === "{") depth++;
+        else if (ch === "}") {
+          depth--;
+          if (depth === 0) {
+            j++;
+            break;
+          }
+        }
+      }
+      out += /^\{[@#/:]/.test(text.slice(at, at + 2)) ? "" : "…";
+      i = j;
+    }
+    return out;
+  };
+
+  const widgetToText = (text) => {
+    let t = foldBraces(text);
+    t = t.replace(/<Cite\b[^>]*\/?>/g, "").replace(/<\/Cite>/g, "");
+    t = t.replace(/<table\b[^>]*>([\s\S]*?)<\/table>/g, (m, inner) => {
+      const rows = [];
+      inner.replace(/<table-row\b[^>]*>([\s\S]*?)<\/table-row>/g, (mr, r) => {
+        const cells = [];
+        r.replace(/<table-cell\b[^>]*>([\s\S]*?)<\/table-cell>/g, (mc, c) => {
+          cells.push(c.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim());
+          return "";
+        });
+        if (cells.some((x) => x && !/^[€$£…\s]*$/.test(x))) rows.push(cells);
+        return "";
+      });
+      if (!rows.length) return "";
+      const line = (cells) => "| " + cells.join(" | ") + " |";
+      const md = [line(rows[0]), "| " + rows[0].map(() => "---").join(" | ") + " |"].concat(
+        rows.slice(1).map(line)
+      );
+      return "\n" + md.join("\n") + "\n";
+    });
+    t = t.replace(/<divider\b[^>]*\/?>/g, "\n---\n");
+    t = t.replace(
+      /<title\b[^>]*>([\s\S]*?)<\/title>/g,
+      (m, s) => "\n**" + s.replace(/<[^>]+>/g, "").trim() + "**\n"
+    );
+    t = t.replace(/<\/(?:text|row|grid-item|box|grid|button|badge)>/g, "\n");
+    t = t.replace(/<[^>]+>/g, "");
+    t = t
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n[ \t]+/g, "\n")
+      .replace(/^[…\s]*$/gm, "") // lines left with nothing but placeholders
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+    return t;
+  };
+
+  // What two copies of the same widget answer have in common: its words.
+  const proseSignature = (text) =>
+    widgetToText(text)
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
+      .trim()
+      .toLowerCase();
+
+  // The rendered turn, when the page currently shows it.
+  const renderedChatGPTText = (id) => {
+    if (!id) return "";
+    const el = document.querySelector('[data-chatgpt-selection-message-id="' + id + '"]');
+    return el ? clean(el) : "";
+  };
+
   // ---------- ChatGPT via its own conversation endpoint ----------
   // Since October 2026 chatgpt.com renders the thread in a column-reverse,
   // windowed list that only loads older turns on trusted scroll events, so a
@@ -509,6 +607,8 @@
     chain.reverse();
 
     const messages = [];
+    let prevSig = null;
+    let prevRendered = false;
     chain.forEach((node) => {
       const msg = node.message;
       if (!msg || !msg.author) return;
@@ -517,7 +617,7 @@
       const c = msg.content || {};
       if (c.content_type !== "text" && c.content_type !== "multimodal_text") return;
       const notes = [];
-      const text = (c.parts || [])
+      let text = (c.parts || [])
         .map((part) => {
           if (typeof part === "string") return part;
           if (part && /image/.test(part.content_type || "")) {
@@ -527,12 +627,29 @@
         })
         .join("")
         .trim();
+      let sig = null;
+      let rendered = false;
+      if (role === "assistant" && WIDGET_RE.test(text)) {
+        sig = proseSignature(text);
+        const onScreen = renderedChatGPTText(msg.id);
+        rendered = !!onScreen;
+        text = onScreen || widgetToText(text);
+      }
       const files = (msg.metadata && msg.metadata.attachments) || [];
       files.forEach((f) => {
         if (f && f.name) notes.push("[user attached: " + f.name + "]");
       });
       const body = (role === "user" ? notes.join("\n") : "") + (text ? (notes.length && role === "user" ? "\n" : "") + text : "");
-      if (body.trim()) messages.push({ role, text: body.trim() });
+      if (!body.trim()) return;
+      // A widget turn arrives as two chained assistant messages carrying the
+      // same template (the second adds the script that drives it). Keep one.
+      if (sig !== null && prevSig !== null && messages.length) {
+        if (prevSig.includes(sig)) return;
+        if (sig.includes(prevSig) && !prevRendered) messages.pop();
+      }
+      prevSig = role === "assistant" ? sig : null;
+      prevRendered = rendered;
+      messages.push({ role, text: body.trim() });
     });
     return messages.length ? messages : null;
   }
