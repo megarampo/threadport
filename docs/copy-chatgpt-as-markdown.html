@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Copy ChatGPT as Markdown (and Why Formatting Breaks) 2026</title>
+<meta name="description" content="Since October 2026, copying a ChatGPT answer often loses bold, italics and tables. Four ways to get clean Markdown out: the code-block trick, rich-text paste, handling GPT-6 interactive answers, and a one-click export of the whole chat.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/copy-chatgpt-as-markdown.html">
+<meta property="og:title" content="How to Copy ChatGPT as Markdown (and Why Formatting Breaks) 2026">
+<meta property="og:description" content="Copying ChatGPT answers lost its formatting? Every real way to get clean Markdown out, including GPT-6's interactive answers, with the trade-offs stated plainly.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/copy-chatgpt-as-markdown.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  code { background: var(--bg-soft); padding: 1px 5px; border-radius: 4px; font-size: 15px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
+
+<h1>How to Copy ChatGPT as Markdown (and Why the Formatting Keeps Breaking)</h1>
+<p class="updated">Updated October 2026 · 6 min read</p>
+
+<p>Copy a ChatGPT answer, paste it into your notes, and the bold is gone. The headings are gone. The table is a run of words. If that started happening to you in October 2026, you are not imagining it: since the GPT-6 rollout on October 7 and 8, the copy button and plain copy-and-paste have been dropping formatting for a lot of people, and the threads on OpenAI's own forum have had no official answer so far.</p>
+
+<p>This guide covers what actually works right now, from quick tricks to a proper export, and it is honest about the limits of each. It also covers the new problem nobody had a month ago: GPT-6's interactive answers, the ones with calculators, sliders and tables you can click, which simply don't copy as text.</p>
+
+<h2>First, what changed</h2>
+
+<p>ChatGPT answers are written in Markdown under the hood. Bold is <code>**bold**</code>, a heading is <code># Heading</code>, a table is rows of <code>|</code>. The interface renders that into formatted text. The copy button used to hand you the Markdown, which is why pasting into Notion, Obsidian or a Markdown editor used to just work.</p>
+
+<p>Two things happened in October 2026. The copy button started returning plain text, without the Markdown marks, for many users on the new interface. And GPT-6 began answering some questions with interactive widgets instead of text. A widget is not Markdown at all: it is a small program the page runs. Select it, copy it, and you get fragments.</p>
+
+<p>Whether the first problem is a bug or a decision, nobody outside OpenAI knows. Plan for it to come and go.</p>
+
+<h2>1. The code-block trick (reliable, one answer at a time)</h2>
+
+<p>Ask ChatGPT to give you the Markdown source itself. Type something like:</p>
+
+<pre>Put your last answer inside a single markdown code block, exactly as written, so I can copy the raw Markdown.</pre>
+
+<p>ChatGPT wraps the answer in a code fence, and the code block has its own copy button that always copies the raw text. Paste that anywhere that understands Markdown and the headings, lists, bold and tables come back.</p>
+
+<p><strong>Good for:</strong> one answer you care about.<br>
+<strong>Bad for:</strong> a long conversation. You would be doing it twenty times, and it only works for the answer, not for your own messages.</p>
+
+<h2>2. Paste as rich text instead (Word, Google Docs, email)</h2>
+
+<p>If your destination is a word processor and not a Markdown app, you may not need Markdown at all. Select the answer in the ChatGPT page with the mouse, copy, and paste into Google Docs, Word or an email. The browser carries the formatting as rich text: bold, headings and simple tables usually survive. Check tables on arrival, they are the first thing to break.</p>
+
+<p><strong>Good for:</strong> documents and emails.<br>
+<strong>Bad for:</strong> Notion, Obsidian, GitHub, anything that wants Markdown. Rich text pasted there turns into a mess of spacing.</p>
+
+<h2>3. GPT-6 interactive answers: there is no copy, so take the text</h2>
+
+<p>When ChatGPT answers with a comparison table you can sort, a calculator with a slider, or a chart, the usual methods fail. The copy button gives you nothing useful, and selecting the widget copies labels without values. Three options, in order of effort:</p>
+
+<ul>
+  <li><strong>Ask for a plain version.</strong> "Give me that as plain text with a normal Markdown table." ChatGPT will rewrite it, and then method 1 works. You lose the interactivity, which is the point.</li>
+  <li><strong>Reduce visuals in settings.</strong> ChatGPT lets you turn down how often it answers with interactive elements. It is a reduction, not an off switch, but it makes plain answers more common.</li>
+  <li><strong>Export the rendered text.</strong> A tool that reads what is on screen, rather than what the copy button offers, gets the values the widget is showing. That is what ThreadPort does, below.</li>
+</ul>
+
+<h2>4. Export the whole conversation as Markdown, in one click</h2>
+
+<p class="disclosure">Full disclosure: this is our tool. The methods above are real alternatives and we use them too.</p>
+
+<p><a href="./">ThreadPort</a> is a Chrome and Edge extension. Open any ChatGPT conversation, click the icon, press <strong>Download .md</strong>, and you get the full thread as a Markdown file: every message, both sides labeled <code>## User</code> and <code>## Assistant</code>, headings and lists intact, code as real fenced code blocks, and a note where you attached a file. There is also a copy-to-clipboard button if you would rather paste than save.</p>
+
+<p>It does not use the copy button, so the October change does not affect it. It reads the conversation itself, and for GPT-6 widgets it takes the text as rendered on screen, with the numbers the widget is showing, instead of the program behind it. We tested this on the interactive tables and calculators the week they shipped, and on the Slides decks that arrived on October 16.</p>
+
+<ul>
+  <li><strong>Markdown export is free with no limit.</strong> Moving a conversation to another AI (Claude, Gemini, Perplexity, Mistral) is free for 5 a month.</li>
+  <li><strong>Private by design:</strong> no account, no servers. The conversation goes from your tab to your disk.</li>
+  <li><strong>Long chats work.</strong> ChatGPT's new interface only keeps the last screen or two of a long conversation loaded. ThreadPort still gets all of it.</li>
+</ul>
+
+<h2>Which one do you actually need?</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>You want to…</th><th>Use</th></tr>
+  <tr><td>Keep the Markdown of one answer</td><td>1. Code-block trick</td></tr>
+  <tr><td>Put an answer in a Word doc or email</td><td>2. Rich-text paste</td></tr>
+  <tr><td>Save an interactive GPT-6 answer</td><td>3. Ask for plain text, or 4</td></tr>
+  <tr><td>Save a whole conversation as a .md file</td><td>4. ThreadPort</td></tr>
+  <tr><td>Continue the conversation in another AI</td><td>4. ThreadPort, "Move to"</td></tr>
+</table>
+</div>
+
+<p class="note">If you just want the copy button to work again: check OpenAI's release notes every week or two. Formatting in copy has broken and been fixed before, more than once. The methods above are for not depending on it.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Why does copying from ChatGPT lose bold and italics?</h3>
+<p>Since early October 2026, the copy button and plain copy-and-paste often return the text without its Markdown marks on the new ChatGPT interface. OpenAI has not explained it. Asking ChatGPT to put the answer in a code block gives you the raw Markdown reliably.</p>
+
+<h3>How do I copy a ChatGPT table into Excel or Google Sheets?</h3>
+<p>Select the table with the mouse and paste into the spreadsheet: most of the time the browser carries it as a real table. If it arrives as one column, ask ChatGPT for the table "as CSV in a code block", copy that, and use your spreadsheet's paste or import for comma-separated text.</p>
+
+<h3>Can I copy a GPT-6 interactive answer (calculator, chart, sortable table)?</h3>
+<p>Not with the copy button, and selecting it copies labels without values. Ask ChatGPT to give the same answer as plain text with a Markdown table, or use an extension that exports the rendered text of the conversation.</p>
+
+<h3>Is there a free way to export a whole ChatGPT conversation as Markdown?</h3>
+<p>Yes. ThreadPort's Download .md is free with no limit and runs entirely in your browser. OpenAI's own export, under Settings, Data controls, gives you all your conversations as a zip of JSON and HTML by email, which is complete but not Markdown and not per conversation.</p>
+
+<div class="cta-box">
+  <p><strong>Get the whole conversation as clean Markdown.</strong> One click, on your machine, no account.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome — Free</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
+</div>
+
+<footer>
+  <a href="./">ThreadPort</a> · <a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/megarampo/threadport/issues">Support</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why does copying from ChatGPT lose bold and italics?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Since early October 2026 the copy button and plain copy-and-paste often return ChatGPT answers without their Markdown marks on the new interface. OpenAI has not explained it. Asking ChatGPT to put the answer inside a markdown code block returns the raw Markdown reliably." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I copy a ChatGPT table into Excel or Google Sheets?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Select the table with the mouse and paste into the spreadsheet; usually it arrives as a real table. If it arrives as one column, ask ChatGPT for the table as CSV in a code block, copy that, and use the spreadsheet's paste or import for comma-separated text." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I copy a GPT-6 interactive answer such as a calculator, chart or sortable table?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Not with the copy button, and selecting the widget copies labels without values. Ask ChatGPT to give the same answer as plain text with a Markdown table, or use a browser extension such as ThreadPort that exports the rendered text of the conversation." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a free way to export a whole ChatGPT conversation as Markdown?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. ThreadPort's Download .md button is free with no limit and runs entirely in the browser. OpenAI's own export under Settings and Data controls sends all conversations as a zip of JSON and HTML by email, which is complete but not Markdown and not per conversation." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
