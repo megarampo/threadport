@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom GPTs End on December 11: How to Save and Move Your GPT Chats</title>
+<meta name="description" content="OpenAI retires Custom GPTs on December 11, 2026. The migration to plugins carries instructions and files, not your conversations. Here is how to export your GPT chat history, keep a GPT's instructions, and continue the work in Claude or Gemini.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/export-custom-gpt-conversations.html">
+<meta property="og:title" content="Custom GPTs End on December 11: How to Save and Move Your GPT Chats">
+<meta property="og:description" content="Custom GPTs stop running on December 11, 2026. Every real way to save your GPT conversations and keep working, with the trade-offs stated plainly.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/export-custom-gpt-conversations.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  code { background: var(--bg-soft); padding: 1px 5px; border-radius: 4px; font-size: 15px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
+
+<h1>Custom GPTs End on December 11: How to Save and Move Your GPT Conversations</h1>
+<p class="updated">Updated October 2026 · 6 min read</p>
+
+<p>If you open the GPT store today, ChatGPT shows a banner: GPTs will be retired on December 11. OpenAI's <a href="https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq">retirement FAQ</a> says the same, with dates: new GPTs can no longer be created, creators can migrate their GPTs to the new plugins, and on <strong>December 11, 2026 custom GPTs stop running</strong>. Enterprise workspaces can ask for an extension to February 2027. Everyone else gets December 11.</p>
+
+<p>The part that matters if you have been <em>using</em> GPTs rather than building them: the migration carries the GPT's instructions, its files and its connected apps. OpenAI's FAQ does not say your conversations go with it, and once a GPT is migrated the original becomes read-only. Nobody has said what happens to the chats you had with a GPT after it stops running. The safe assumption is that you can't continue them.</p>
+
+<p>So this guide is about the conversations. Months of work with a research GPT, a writing GPT, a GPT set up for your job: here is how to get it out, in rough order of how much it keeps.</p>
+
+<h2>First, find out what you actually have</h2>
+
+<p>In the ChatGPT sidebar, GPT chats are listed like any other conversation, but the address bar tells them apart: a GPT chat lives at <code>chatgpt.com/g/g-…/c/…</code>. Open the GPT itself and its name appears at the top of the chat. Make a short list of the GPTs you rely on and, for each, whether you built it or someone else did. That decides which of the steps below you need.</p>
+
+<h2>1. OpenAI's data export (everything, in one zip, not usable as is)</h2>
+
+<p>Settings, Data controls, Export data. OpenAI emails you a zip with all your conversations, GPT chats included, as JSON and an HTML viewer. It is complete and it is the right thing to do once, as a backup.</p>
+
+<p><strong>Good for:</strong> a full legal copy of everything.<br>
+<strong>Bad for:</strong> working with any single conversation. The chats are one big file, not separate documents, and you can't feed them to another AI as context without extracting them first.</p>
+
+<h2>2. If you built the GPT: save its instructions and files now</h2>
+
+<p>Open the GPT, choose Edit, and go to the Configure tab. Copy the instructions into a text file, and download or locate the knowledge files you uploaded, plus the conversation starters. Do this before migrating: after migration the original GPT is read-only.</p>
+
+<p>Those instructions are what you need to rebuild the same assistant anywhere else. A Claude Project takes a set of instructions and files. Gemini's custom assistants (Gems, now being replaced by Skills) do the same. The GPT itself is going away; its brain is a text file you can keep.</p>
+
+<p><strong>Good for:</strong> creators.<br>
+<strong>Bad for:</strong> users of someone else's GPT. You can't see its instructions, and access to a public GPT does not guarantee access to its replacement plugin.</p>
+
+<h2>3. Save each GPT conversation as a Markdown file (one click)</h2>
+
+<p class="disclosure">Full disclosure: this is our tool. The other methods on this page are real alternatives.</p>
+
+<p><a href="./">ThreadPort</a> is a Chrome and Edge extension. Open the GPT conversation, click the icon, press <strong>Download .md</strong>, and you get that conversation as a clean Markdown file: every message, both sides labeled, headings and code intact, attachments noted. It works on GPT chats exactly as on normal ones; we tested it on the GPT store's featured GPTs in late October. Markdown export is free with no limit, and nothing leaves your browser.</p>
+
+<p>Do this for the conversations you would miss. Ten chats take a couple of minutes. The result is a folder of files you can search, read, and paste into any other assistant.</p>
+
+<p><strong>Good for:</strong> keeping the conversations you care about, as documents.<br>
+<strong>Bad for:</strong> backing up hundreds of chats you never reopen. Use method 1 for those.</p>
+
+<h2>4. Continue the work somewhere that isn't going away</h2>
+
+<p>Exporting is rarely the goal. The goal is to keep doing whatever you were doing with the GPT. Two steps:</p>
+
+<ul>
+  <li><strong>Rebuild the assistant.</strong> If you have the instructions (method 2), paste them into a Claude Project or a Gemini custom assistant, and add the files. If you don't, write down in a paragraph what the GPT did for you. That paragraph is most of it.</li>
+  <li><strong>Carry the conversation over.</strong> Open the GPT chat, click ThreadPort, choose <strong>Move to Claude</strong> (or Gemini, Perplexity, Mistral). A new tab opens with the full conversation pasted and framed as a continuation. Send it, and keep going from where you were. Transfers are free for 5 a month, which covers the conversations that are actually mid-task.</li>
+</ul>
+
+<p class="note">Order matters. Move the conversations you are in the middle of first, before December 11, while the GPT still answers and you can check nothing was lost. Archive the rest with method 1 whenever.</p>
+
+<h2>5. If the creator migrated the GPT to a plugin</h2>
+
+<p>Migrated GPTs continue as plugins after December 11, according to the in-app banner. You may be able to keep using the same assistant under its new form, if the creator made it available to you. Your old conversations with the GPT are a separate question, and OpenAI hasn't answered it. Save them anyway.</p>
+
+<h2>Which one do you actually need?</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>You…</th><th>Do</th></tr>
+  <tr><td>Want one complete backup of everything</td><td>1. OpenAI's data export</td></tr>
+  <tr><td>Built a GPT and want to rebuild it elsewhere</td><td>2. Save instructions and files, then 4</td></tr>
+  <tr><td>Have GPT conversations you want to keep as documents</td><td>3. Download .md per chat</td></tr>
+  <tr><td>Are mid-task in a GPT chat</td><td>4. Move it to Claude or Gemini and continue</td></tr>
+  <tr><td>Use someone else's GPT</td><td>3 now, then check if a plugin replaces it</td></tr>
+</table>
+</div>
+
+<h2>Frequently asked questions</h2>
+
+<h3>When exactly do Custom GPTs stop working?</h3>
+<p>OpenAI's FAQ gives December 11, 2026 as the scheduled retirement, for all plans. Enterprise workspaces can request an extension to February 2027. OpenAI notes the dates may change, so check the FAQ and the banner in the GPT store.</p>
+
+<h3>Will my conversations with a GPT be migrated to its plugin?</h3>
+<p>Nothing in OpenAI's FAQ says so. The migration covers the GPT's instructions, files and connected apps, and after migration the original GPT is read-only. Treat your conversations as something you have to save yourself.</p>
+
+<h3>How do I export a Custom GPT conversation?</h3>
+<p>Either OpenAI's full data export (Settings, Data controls), which gives you every conversation in one zip, or a per-conversation export with a browser extension such as ThreadPort, which saves the open chat as a Markdown file.</p>
+
+<h3>Can I move a GPT conversation to Claude or Gemini and keep working?</h3>
+<p>Yes. Open the GPT chat, click ThreadPort and choose the destination. A new tab opens with the full conversation pasted and framed as a continuation. Add the GPT's instructions at the top if you have them, and the other assistant picks up where the GPT left off.</p>
+
+<div class="cta-box">
+  <p><strong>Save your GPT conversations before December 11.</strong> Markdown file, or straight into Claude, Gemini, Perplexity or Mistral. On your machine, no account.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/threadport-%E2%80%94-move-chats-b/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome — Free</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/threadport-%E2%80%94-move-chats-b/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
+</div>
+
+<footer>
+  <a href="./">ThreadPort</a> · <a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/megarampo/threadport/issues">Support</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "When exactly do Custom GPTs stop working?",
+      "acceptedAnswer": { "@type": "Answer", "text": "OpenAI's retirement FAQ gives December 11, 2026 as the scheduled retirement date for custom GPTs on all plans. Enterprise workspaces can request an extension to February 2027. OpenAI notes the dates may change." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will my conversations with a GPT be migrated to its plugin?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nothing in OpenAI's FAQ says so. The migration covers the GPT's instructions, files and connected apps, and after migration the original GPT becomes read-only. Save your conversations yourself." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I export a Custom GPT conversation?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Use OpenAI's full data export under Settings and Data controls, which emails every conversation in one zip, or export a single conversation with a browser extension such as ThreadPort, which saves the open GPT chat as a Markdown file." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I move a GPT conversation to Claude or Gemini and keep working?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Open the GPT chat, click ThreadPort and choose the destination AI. A new tab opens with the full conversation pasted and framed as a continuation. Add the GPT's instructions at the top if you have them." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
