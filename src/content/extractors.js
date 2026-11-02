@@ -76,6 +76,9 @@
       .replace(/ /g, " ")
       .replace(/\n[ \t]+\n/g, "\n\n") // whitespace-only lines (gaps between inline chips)
       .replace(/\n{3,}/g, "\n\n") // collapse blank-line explosions from nested blocks
+      // A list item whose text sits in a <p> (Gemini) renders as "- \n\nText":
+      // pull the text back up next to its marker.
+      .replace(/^([-*]|\d+\.)[ \t]*\n+(?=\S)/gm, "$1 ")
       .trim();
     clone.remove();
     return text;
