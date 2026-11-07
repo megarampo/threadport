@@ -45,11 +45,13 @@
 <nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
 
 <h1>Custom GPTs End on December 11: How to Save and Move Your GPT Conversations</h1>
-<p class="updated">Updated October 2026 · 6 min read</p>
+<p class="updated">Updated November 7, 2026 · 6 min read</p>
 
 <p>If you open the GPT store today, ChatGPT shows a banner: GPTs will be retired on December 11. OpenAI's <a href="https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq">retirement FAQ</a> says the same, with dates: new GPTs can no longer be created, creators can migrate their GPTs to the new plugins, and on <strong>December 11, 2026 custom GPTs stop running</strong>. Enterprise workspaces can ask for an extension to February 2027. Everyone else gets December 11.</p>
 
-<p>The part that matters if you have been <em>using</em> GPTs rather than building them: the migration carries the GPT's instructions, its files and its connected apps. OpenAI's FAQ does not say your conversations go with it, and once a GPT is migrated the original becomes read-only. Third-party write-ups say the conversations you had with a GPT stay readable after the retirement, while the GPT and its page disappear. OpenAI's own FAQ doesn't say either way. Readable is not the same as usable: you won't be able to continue them with the GPT, so the real question is where you continue them.</p>
+<p>The part that matters if you have been <em>using</em> GPTs rather than building them: the migration carries the GPT's instructions, its files and its connected apps. OpenAI's FAQ does not say your conversations go with it, and once a GPT is migrated the original becomes read-only. What happens to those conversations is the part OpenAI's FAQ leaves out, so here is the best available answer. Users whose GPTs already disappeared (deleted by their creators, or stopped working) report the same thing: the chats stayed in their history and turned into regular ChatGPT chats they could keep writing in. The GPT behind them was gone, so no more custom instructions and no more knowledge files, but the conversation itself continued. If December 11 goes the same way, you don't lose the chat. You lose the assistant.</p>
+
+<p>That changes the priorities. If you built a GPT, the thing to save is the GPT itself: its instructions, its conversation starters and its files, which live only in the editor. If you used someone else's, the conversation stays, but it continues as plain ChatGPT. For work that depended on what the GPT knew, the real question is where you continue it with that knowledge.</p>
 
 <p>So this guide is about the conversations. Months of work with a research GPT, a writing GPT, a GPT set up for your job: here is how to get it out, in rough order of how much it keeps.</p>
 
@@ -66,7 +68,7 @@
 
 <h2>2. If you built the GPT: save its instructions and files now</h2>
 
-<p>Open the GPT, choose Edit, and go to the Configure tab. Copy the instructions into a text file, and download or locate the knowledge files you uploaded, plus the conversation starters. Do this before migrating: after migration the original GPT is read-only.</p>
+<p>Open the GPT, choose Edit, and go to the Configure tab. Three things live only there and nowhere else: the instructions, the conversation starters and the list of knowledge files. Copy the instructions and the starters into a text file, and locate the files you uploaded (keep the originals; the editor doesn't give them back). Do this before migrating: after migration the original GPT is read-only, and after December 11 the editor is gone.</p>
 
 <p>Those instructions are what you need to rebuild the same assistant anywhere else. A Claude Project takes a set of instructions and files. Gemini's custom assistants (Gems, now being replaced by Skills) do the same. The GPT itself is going away; its brain is a text file you can keep.</p>
 
@@ -97,7 +99,7 @@
 
 <h2>5. If the creator migrated the GPT to a plugin</h2>
 
-<p>Migrated GPTs continue as plugins after December 11, according to the in-app banner. You may be able to keep using the same assistant under its new form, if the creator made it available to you. Your old conversations with the GPT should stay readable in your history, according to third-party reports, but you can't carry on with a retired GPT. Save the ones that matter anyway, and move the ones you are still working on.</p>
+<p>Migrated GPTs continue as plugins after December 11, according to the in-app banner. You may be able to keep using the same assistant under its new form, if the creator made it available to you. Your old conversations stay in your history and, going by what happened to users whose GPTs already disappeared, they continue as regular ChatGPT chats without the GPT's instructions and files. Save the ones that matter anyway, and move the ones that depended on what the GPT knew.</p>
 
 <h2>Which one do you actually need?</h2>
 
@@ -116,6 +118,9 @@
 
 <h3>When exactly do Custom GPTs stop working?</h3>
 <p>OpenAI's FAQ gives December 11, 2026 as the scheduled retirement, for all plans. Enterprise workspaces can request an extension to February 2027. OpenAI notes the dates may change, so check the FAQ and the banner in the GPT store.</p>
+
+<h3>What happens to my old GPT chats after December 11?</h3>
+<p>OpenAI's FAQ doesn't say. Users whose GPTs already disappeared report that the chats stayed in their history and became regular ChatGPT chats they could continue, with no GPT behind them. Expect the same: the conversation stays, the GPT's instructions and files don't.</p>
 
 <h3>Will my conversations with a GPT be migrated to its plugin?</h3>
 <p>Nothing in OpenAI's FAQ says so. The migration covers the GPT's instructions, files and connected apps, and after migration the original GPT is read-only. Treat your conversations as something you have to save yourself.</p>
@@ -145,6 +150,11 @@
       "@type": "Question",
       "name": "When exactly do Custom GPTs stop working?",
       "acceptedAnswer": { "@type": "Answer", "text": "OpenAI's retirement FAQ gives December 11, 2026 as the scheduled retirement date for custom GPTs on all plans. Enterprise workspaces can request an extension to February 2027. OpenAI notes the dates may change." }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens to my old GPT chats after December 11?",
+      "acceptedAnswer": { "@type": "Answer", "text": "OpenAI's FAQ doesn't say. Users whose GPTs already disappeared report that the chats stayed in their history and became regular ChatGPT chats they could continue, with no GPT behind them. Expect the conversation to stay and the GPT's instructions and files to go." }
     },
     {
       "@type": "Question",
