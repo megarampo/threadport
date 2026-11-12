@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Move a Custom GPT to Claude Before December 11 (Instructions, Files, Chats)</title>
+<meta name="description" content="Custom GPTs retire on December 11, 2026. A GPT maps almost one to one onto a Claude Project. Step by step: copy the instructions and files, rebuild the assistant in Claude, and carry over the conversations you are still working on.">
+<link rel="canonical" href="https://megarampo.github.io/threadport/migrate-custom-gpt-to-claude.html">
+<meta property="og:title" content="How to Move a Custom GPT to Claude Before December 11">
+<meta property="og:description" content="There is no automatic tool, but it takes about ten minutes. What maps to what, what does not transfer, and how to bring your GPT conversations along.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://megarampo.github.io/threadport/migrate-custom-gpt-to-claude.html">
+<style>
+  :root { --accent: #4f46e5; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb; --bg-soft: #f7f7fb; }
+  * { box-sizing: border-box; }
+  body { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; font: 17px/1.65 system-ui, sans-serif; color: var(--text); }
+  nav.crumb { font-size: 15px; margin-bottom: 36px; }
+  nav.crumb a { color: var(--accent); text-decoration: none; font-weight: 650; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; }
+  .updated { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 22px; margin: 44px 0 12px; }
+  h3 { font-size: 18px; margin: 28px 0 8px; }
+  p, li { color: var(--text); }
+  .note { background: var(--bg-soft); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15.5px; }
+  pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 14px; line-height: 1.5; overflow-x: auto; white-space: pre-wrap; }
+  code { background: var(--bg-soft); padding: 1px 5px; border-radius: 4px; font-size: 15px; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  .cta-box { margin: 44px 0 0; padding: 26px 24px; border: 1px solid var(--border); border-radius: 14px; text-align: center; background: var(--bg-soft); }
+  .cta-box p { margin-top: 0; }
+  .cta { display: inline-block; margin: 6px 4px 0; padding: 12px 22px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 650; font-size: 16px; }
+  .cta.alt { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 10px 20px; }
+  .disclosure { font-size: 14px; color: var(--muted); }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer a { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    :root { --text: #e5e7eb; --muted: #9ca3af; --border: #2e2e3a; --bg-soft: #1e1e29; }
+    body { background: #16161f; }
+  }
+</style>
+</head>
+<body>
+<nav class="crumb"><a href="./">⇄ ThreadPort</a> <span style="color:var(--muted)">/ Guides</span></nav>
+
+<h1>How to Move a Custom GPT to Claude Before December 11</h1>
+<p class="updated">Updated November 12, 2026 · 6 min read</p>
+
+<p>OpenAI retires custom GPTs on <strong>December 11, 2026</strong>. Its reminder email and its <a href="https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq">retirement FAQ</a> offer two ways forward, both inside ChatGPT: turn the GPT into a plugin, or continue in a ChatGPT Project. If you would rather rebuild the assistant in Claude, nothing does it for you, but it is a ten minute job, because a GPT and a Claude Project are built from the same parts.</p>
+
+<p>This guide covers the three things you have to carry: the instructions, the files, and the conversations you are still in the middle of.</p>
+
+<h2>What maps to what</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>In your GPT</th><th>In Claude</th></tr>
+  <tr><td>Instructions</td><td>Project instructions. Paste them as they are.</td></tr>
+  <tr><td>Knowledge files</td><td>Project knowledge. Upload the same files.</td></tr>
+  <tr><td>Conversation starters</td><td>No equivalent. Keep them in a note and paste one when you start a chat.</td></tr>
+  <tr><td>Custom actions (calls to outside services)</td><td>Nothing transfers. They have to be rebuilt as a connector, which is technical work.</td></tr>
+  <tr><td>Your conversations with the GPT</td><td>Not moved by anything official. See step 3.</td></tr>
+  <tr><td>A public page in the GPT store</td><td>No equivalent. A Project is yours, not a public listing.</td></tr>
+</table>
+</div>
+
+<h2>Step 1. Get the instructions and files out of the GPT</h2>
+
+<p><strong>If you built the GPT:</strong> open it, choose Edit, and go to the Configure tab. Copy the instructions and the conversation starters into a text file. Find the originals of the knowledge files you uploaded, because the editor lists them but does not hand them back. Do this now. The editor goes away with the GPT on December 11, and a GPT that has been migrated to a plugin becomes read-only.</p>
+
+<p><strong>If someone else built it:</strong> you can't see its instructions, and you don't need them word for word. Open two or three of your best conversations with it and write down what it did every time: the role it played, the format of its answers, the rules it followed, what it refused to do. One honest paragraph gets you most of the way. If the GPT relied on its creator's files, you will be working without them, so collect your own reference material.</p>
+
+<h2>Step 2. Create the Claude Project</h2>
+
+<ol>
+  <li>In <a href="https://claude.ai" rel="nofollow">claude.ai</a>, open Projects and create a new one. Name it after the GPT.</li>
+  <li>Choose <strong>Set project instructions</strong> and paste the instructions from step 1.</li>
+  <li>Add the knowledge files to the project knowledge.</li>
+</ol>
+
+<p>Read the instructions once before saving and delete anything that only made sense in ChatGPT: the names of actions, "use the browsing tool", "generate an image with". Everything else can stay. Instructions written for a GPT are plain language and Claude follows them without rewriting.</p>
+
+<p class="note">Claude's <a href="https://support.claude.com/en/articles/9517075-what-are-projects" rel="nofollow">help center</a> says free accounts can create up to five projects. If your plan doesn't show the option to set project instructions, save the instructions as a text file, add it to the project knowledge, and start each chat by asking Claude to follow that file.</p>
+
+<h2>Step 3. Bring over the conversations you are still working on</h2>
+
+<p>Your old GPT chats stay accessible in ChatGPT after December 11. They don't travel to Claude on their own, and a new Claude Project knows nothing about the months of back and forth you had with the GPT. For the conversations that are finished, that is fine. For the ones you are in the middle of, there are three ways to carry them.</p>
+
+<p class="disclosure">Full disclosure: ThreadPort is our tool. The manual route below works without it.</p>
+
+<ul>
+  <li><strong>As a file in the project (best for ongoing work).</strong> Open the GPT chat, click <a href="./">ThreadPort</a> and press <strong>Download .md</strong>. You get the whole conversation as one Markdown file, both sides labeled, code and headings intact. Add that file to the project knowledge. Every new chat in the project can now read what you and the GPT already worked out. Markdown export is free with no limit.</li>
+  <li><strong>As a live conversation.</strong> Open the GPT chat, click ThreadPort and choose <strong>Move to Claude</strong>. A new Claude chat opens with the full conversation pasted and framed as a continuation, and you carry on from the last message. This opens a regular chat, outside the project, so it suits a single thread you want to finish. Transfers are free for 5 a month.</li>
+  <li><strong>By hand.</strong> Select the conversation in ChatGPT, copy it, paste it into a new chat in the project and tell Claude it is the history of earlier work. It works for short chats. Long ones drag along button labels and lose their formatting. <a href="transfer-chatgpt-to-claude.html">The manual method, step by step</a>.</li>
+</ul>
+
+<p>ThreadPort reads GPT chats the same way it reads normal ChatGPT chats. Nothing leaves your browser and there is no account.</p>
+
+<h2>Step 4. Test it while the GPT still answers</h2>
+
+<p>Before December 11 you can still run the two side by side. Take three prompts you used often and one hard one, send them to the GPT and to the Claude Project, and compare. Where Claude drifts from what you wanted, add a line to the project instructions. After the 11th there is nothing left to compare against, which is the real reason not to leave this for the last week.</p>
+
+<h2>What you will not get back</h2>
+
+<ul>
+  <li><strong>Custom actions.</strong> If the GPT called an outside service (a booking system, a database, your own API), that connection has to be rebuilt. OpenAI says the same about its own plugins: actions do not transfer.</li>
+  <li><strong>Your audience.</strong> If other people used your GPT, a Claude Project does not give them a link to the same thing. Send them the instructions as a text file and each one creates their own project.</li>
+  <li><strong>Built-in tools that differ.</strong> If the GPT depended on a ChatGPT feature such as image generation, check that Claude offers what you need before you commit.</li>
+</ul>
+
+<h2>Or stay in ChatGPT</h2>
+
+<p>If moving is more than you need, OpenAI's own options are reasonable: a ChatGPT Project holds instructions and files the same way, and a creator can migrate a GPT to a plugin from My GPTs. We cover those, the full data export and what happens to your chats in <a href="export-custom-gpt-conversations.html">Custom GPTs end on December 11: how to save and move your GPT conversations</a>.</p>
+
+<h2>Frequently asked questions</h2>
+
+<h3>Is there a tool that migrates a custom GPT to Claude automatically?</h3>
+<p>No. OpenAI's migration only turns a GPT into a ChatGPT plugin. Moving to Claude is manual: copy the instructions, upload the files to a Claude Project, and bring over the conversations you need. It takes about ten minutes per GPT.</p>
+
+<h3>What is the Claude equivalent of a custom GPT?</h3>
+<p>A Project. It holds a set of instructions and a set of knowledge files, and every chat started inside it uses both. It has no public store page and no conversation starters.</p>
+
+<h3>Do my conversations with the GPT move to Claude?</h3>
+<p>Not on their own. They stay accessible in ChatGPT after the retirement. To continue one in Claude, export it as a Markdown file and add it to the project, or move it with a browser extension such as ThreadPort.</p>
+
+<h3>Can I move a GPT that someone else made?</h3>
+<p>You can't copy its instructions or files, because only the creator can see them. You can rebuild what it did for you: describe its role and rules in your own words, add your own reference files, and bring your conversations with it as context.</p>
+
+<h3>When is the deadline?</h3>
+<p>Custom GPTs are scheduled to retire on December 11, 2026. Enterprise workspaces with an approved deferral have until February 11, 2027. Copy the instructions out before the date, because the GPT editor goes away with the GPT.</p>
+
+<div class="cta-box">
+  <p><strong>Take your GPT conversations with you.</strong> One Markdown file per chat, or straight into Claude. On your machine, no account.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/kclkpikpgnldnpnmojkcnoclcihmhhmd">Add to Chrome (free)</a>
+  <a class="cta alt" href="https://microsoftedge.microsoft.com/addons/detail/hfegopjfooabblaccgifjfomanedeapc">Add to Edge</a>
+</div>
+
+<footer>
+  <a href="./">ThreadPort</a> · <a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/megarampo/threadport/issues">Support</a>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there a tool that migrates a custom GPT to Claude automatically?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. OpenAI's migration only turns a GPT into a ChatGPT plugin. Moving to Claude is manual: copy the instructions, upload the files to a Claude Project, and bring over the conversations you need. It takes about ten minutes per GPT." }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the Claude equivalent of a custom GPT?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A Project. It holds a set of instructions and a set of knowledge files, and every chat started inside it uses both. It has no public store page and no conversation starters." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do my conversations with the GPT move to Claude?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Not on their own. They stay accessible in ChatGPT after the retirement. To continue one in Claude, export it as a Markdown file and add it to the project, or move it with a browser extension such as ThreadPort." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I move a GPT that someone else made?",
+      "acceptedAnswer": { "@type": "Answer", "text": "You can't copy its instructions or files, because only the creator can see them. You can rebuild what it did for you: describe its role and rules in your own words, add your own reference files, and bring your conversations with it as context." }
+    },
+    {
+      "@type": "Question",
+      "name": "When is the deadline to move a custom GPT?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Custom GPTs are scheduled to retire on December 11, 2026. Enterprise workspaces with an approved deferral have until February 11, 2027. Copy the instructions out before the date, because the GPT editor goes away with the GPT." }
+    }
+  ]
+}
+</script>
+</body>
+</html>
